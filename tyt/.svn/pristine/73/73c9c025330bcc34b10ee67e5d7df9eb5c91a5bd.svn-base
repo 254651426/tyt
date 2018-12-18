@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>天眼通用户</title>
+<#include "header.html" />
+</head>
+<body>
+<div id="tytUserApp" v-cloak>
+	<div v-show="showItem=='list'">
+		<div class="grid-btn">
+			<div class="form-group col-sm-2">
+				<select v-model="q.searchBy" class="form-control">
+					<option value="">请选择查询项</option>
+					<option value="username">用户名</option>
+					<option value="level">级别</option>
+					<option value="ip">ip</option>
+					<option value="version">登陆版本</option>
+					<option value="share_code">分享码</option>
+					<option value="fmcode">注册码</option>
+					<option value="depname">机构</option>
+				</select>
+			</div>
+			<div class="form-group col-sm-2">
+				<input type="text" class="form-control" v-model="q.keyword" @keyup.enter="query" placeholder="请输入查询值">
+			</div>
+			<a class="btn btn-default" @click="query">查询</a>
+			<@shiroPermission role="sys:tytUser:saveadd" >
+			<a class="btn btn-primary" @click="add"><i class="fa fa-plus"></i>&nbsp;新增</a>
+			</@shiroPermission>
+		</div>
+	    <table class="qrcode-box">
+			<thead>
+				<tr>
+			        <th>用户名</th>
+		        	<th>来源</th>
+		        	<th>等级</th>
+		        	<th>分享码</th>
+		        	<th>注册码</th>
+		        	<th>ip</th>
+		        	<th>版本</th>
+		        	<th>状态</th>
+		        	<th>机构</th>
+		        	<th>创建时间</th>
+		        	<th>登陆时间</th>
+		        	<th>vip结束时长</th>
+		        	<th style="width:20%;">
+		        		操作
+		        	</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr v-for="item in params">
+		        	<td>{{ item.username }}</td>
+		        	<td>{{ item.version }}</td>
+		        	<td>{{ item.level }}</td>
+		        	<td>{{ item.shareCode }}</td>
+		        	<td>{{ item.fmcode }}</td>
+		        	<td>{{ item.ip }}</td>
+		        	<td>{{ item.version }}</td>
+		        	<td>{{ item.status }}</td>
+		        	<td>{{ item.depname }}</td>
+		        	<td>{{ item.createDate| time }}</td>
+		        	<td>{{ item.loginDate| time  }}</td>
+		        	<td>{{ item.vipEndTime| time  }}</td>
+		        	<td>
+		        		<a class="btn btn-primary" href="javascript:void(0)" @click="update(item.id)" >修改密码</a>
+		        		<a class="btn btn-primary" href="javascript:void(0)" @click="change(item.id)" >修改账号</a>
+		        	</td>
+				</tr>
+			</tbody>
+		</table>
+	    <uib-pagination :total-items="totalItems" style="padding-left:42% ;float: left;"  v-model="pagination" :max-size="maxSize" :items-per-page="pageSize" class="pagination-sm" :boundary-link-numbers="false" :boundary-links="true" previous-text="上一页" next-text="下一页" first-text="首页" last-text="尾页" :rotate="false" @change="pageChanged" > </uib-pagination>
+	    <div class="page-div" >{{pagination.currentPage}}-{{pagination.numPages}}    共{{totalItems}}条</div>
+    	<select class="page-select" v-model="pageSize"  @change = "pageNum">
+        	<option value="10">10</option> 
+        	<option value="20">20</option>
+        	<option value="30">30</option>
+        </select>
+    </div>
+    
+    <div v-show="showItem=='password'" class="panel panel-default">
+		<div class="panel-heading">修改密码</div>
+		<form class="form-horizontal">
+			<div class="form-group">
+			   	<div class="col-sm-2 control-label">状态</div>
+			   	<div class="col-sm-10">
+			      <input type="text" class="form-control" v-model="tytUser.status" placeholder="状态"/>
+			    </div>
+			</div>
+			<div class="form-group">
+			   	<div class="col-sm-2 control-label">密码</div>
+			   	<div class="col-sm-10">
+			   	  <input type="hidden" class="form-control" v-model="tytUser.id" />
+			      <input type="text" class="form-control" v-model="tytUser.password" placeholder="密码"/>
+			    </div>
+			</div>
+			<div class="form-group">
+				<div class="col-sm-2 control-label"></div> 
+				<input type="button" class="btn btn-primary" @click="saveOrUpdate" value="确定"/>
+				&nbsp;&nbsp;<input type="button" class="btn btn-warning" @click="reload" value="返回"/>
+			</div>
+		</form>
+	</div>
+	
+	<div v-show="showItem=='addUser'" class="panel panel-default">
+		<div class="panel-heading">新增用户</div>
+		<form class="form-horizontal">
+			<div class="form-group">
+			   	<div class="col-sm-2 control-label">用户名</div>
+			   	<div class="col-sm-10">
+			      <input type="text" class="form-control" v-model="tytUser.username" placeholder="用户名" ref="input1"/>
+			    </div>
+			</div>
+			<div class="form-group">
+			   	<div class="col-sm-2 control-label">密码</div>
+			   	<div class="col-sm-10">
+			      <input type="text" class="form-control" v-model="tytUser.password" placeholder="密码" ref="input2"/>
+			    </div>
+			</div>
+			<div class="form-group">
+			   	<div class="col-sm-2 control-label">再次输入密码</div>
+			   	<div class="col-sm-10">
+			      <input type="text" class="form-control" v-model="rePass" placeholder="密码" ref="input3"/>
+			    </div>
+			</div>
+			<div class="form-group">
+				<div class="col-sm-2 control-label"></div> 
+				<input type="button" class="btn btn-primary" @click="saveOrAdd" value="确定"/>
+				&nbsp;&nbsp;<input type="button" class="btn btn-warning" @click="reload" value="返回"/>
+			</div>
+		</form>
+	</div>
+	
+	<div v-show="showItem=='level'" class="panel panel-default">
+		<div class="panel-heading">修改账号</div>
+		<form class="form-horizontal">
+			<div class="form-group">
+			   	<div class="col-sm-2 control-label">等级</div>
+			   	<div class="col-sm-10">
+			   	  <input type="hidden" class="form-control" v-model="userId" />
+			      <input type="text" class="form-control" v-model="userLevel" placeholder="等级"/>
+			    </div>
+			</div>
+			<div class="form-group">
+			   	<div class="col-sm-2 control-label">天数</div>
+			   	<div class="col-sm-10">
+			      <input type="text" class="form-control" v-model="userDay" placeholder="天数"/>
+			    </div>
+			</div>
+			<div class="form-group">
+				<div class="col-sm-2 control-label"></div> 
+				<input type="button" class="btn btn-primary" @click="changeUser" value="确定"/>
+				&nbsp;&nbsp;<input type="button" class="btn btn-warning" @click="reload" value="返回"/>
+			</div>
+		</form>
+	</div>
+    
+</div>
+
+<script src="${rc.contextPath}/js/sys/tytUser.js?_${.now?long}"></script>
+</body>
+</html>

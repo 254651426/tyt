@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bquan.dao.write.UseLogWriteMapper" >
+  
+  <delete id="delete" parameterType="com.bquan.entity.mysql.UseLog" >
+  	<if test="id!=null">
+	  	delete from 
+			use_log
+	    where 
+	    	id = #{id}
+  	</if>
+  </delete>
+  
+  <delete id="deleteBatch">
+	delete from use_log where id in 
+	<foreach item="id" collection="array" open="(" separator="," close=")">
+		#{id}
+	</foreach>
+  </delete>
+  
+  <insert id="insert" parameterType="com.bquan.entity.mysql.UseLog" >
+		INSERT INTO use_log (
+    		id
+            ,user_id
+            ,user_name
+            ,create_time
+            ,type
+            ,info
+            ,access_address
+            ,access_time
+            ,real_ip
+            ,ip
+            ,macadress
+		)
+		VALUES
+		(
+			#{id}
+            ,#{userId}
+            ,#{userName}
+            ,#{createTime}
+            ,#{type}
+            ,#{info}
+            ,#{accessAddress}
+            ,#{accessTime}
+            ,#{realIp}
+            ,#{ip}
+            ,#{macadress}
+		)
+	</insert>
+	
+	<update id="update" parameterType="com.bquan.entity.mysql.UseLog">
+		UPDATE use_log
+		<set>
+			<if test="id!= null">id = #{id}</if>
+            <if test="userId!= null">,user_id = #{userId}</if>
+            <if test="userName!= null">,user_name = #{userName}</if>
+            <if test="createTime!= null">,create_time = #{createTime}</if>
+            <if test="type!= null">,type = #{type}</if>
+            <if test="info!= null">,info = #{info}</if>
+            <if test="accessAddress!= null">,access_address = #{accessAddress}</if>
+            <if test="accessTime!= null">,access_time = #{accessTime}</if>
+            <if test="realIp!= null">,real_ip = #{realIp}</if>
+            <if test="ip!= null">,ip = #{ip}</if>
+            <if test="macadress!= null">,macadress = #{macadress}</if>
+		</set>
+		WHERE id = #{id}
+	</update>
+	
+</mapper>
+

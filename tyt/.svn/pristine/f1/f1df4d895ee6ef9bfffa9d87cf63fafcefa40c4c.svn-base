@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<#include "../sys/header.html" />
+<title>Insert title here</title>
+<script type="text/javascript">
+$(function () {
+    $("#buttonId").click(function(){
+    	$.ajax({
+			url:"/wap/merchants/pay",
+			type:'post',
+			contentType : "application/x-www-form-urlencoded",
+			dataType:'json',
+			data:{
+				'number':'11',
+				'lxk':'11111'
+			},
+			success:function(res){
+				console.log(res);
+			}
+		})
+    })
+});
+</script>
+</head>
+<body>
+3333333333333333----${test}
+
+<form action="/wap/test/save" method="post">	
+	<input type="text" name="name"/>
+	<input id="buttonId" type="button" value="提交" />
+</form>
+</body>
+</html>

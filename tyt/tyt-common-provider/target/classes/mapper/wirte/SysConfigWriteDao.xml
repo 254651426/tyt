@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">    
+<mapper namespace="com.bquan.dao.write.SysConfigWriteDao">  
+	
+	<insert id="save" parameterType="com.bquan.entity.mysql.SysConfigEntity">
+		insert into sys_config(`key`, `value`, remark)
+			values(#{key},#{value},#{remark})
+	</insert>
+	
+	<update id="update" parameterType="com.bquan.entity.mysql.SysConfigEntity">
+		update sys_config set `key` = #{key}, `value` = #{value}, remark = #{remark} 
+			 where id = #{id}
+	</update>
+	
+	<!-- 根据key，更新value -->
+	<update id="updateValueByKey" parameterType="map">
+		update sys_config set `value` = #{value} where `key` = #{key}
+	</update>
+	
+	<delete id="deleteBatch" parameterType="int">
+		delete from sys_config where id in 
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+	
+	
+</mapper>

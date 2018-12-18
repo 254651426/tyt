@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bquan.dao.read.ProductReadMapper" >
+  <resultMap id="BaseResultMap" type="com.bquan.entity.mysql.Product" >
+    	<result column="product_id" property="id" />
+    	<result column="product_name" property="name" />
+    	<result column="product_price" property="price" />
+    	<result column="product_content" property="content" />
+    	<result column="product_sign" property="sign" />
+    	<result column="product_is_expired" property="isExpired" />
+    	<result column="product_day" property="day" />
+    	<result column="product_type" property="type" />
+    	<result column="product_html" property="html" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+		product.id as product_id,
+		product.name as product_name,
+		product.price as product_price,
+		product.content as product_content,
+		product.sign as product_sign,
+		product.is_expired as product_is_expired,
+		product.day as product_day,
+		product.type as product_type,
+		product.html as product_html
+  </sql>
+  
+  <sql id="Base_Where_Sql" >
+  	<if test="id!=null"> and product.id = #{id} </if>
+  	<if test="name!=null"> and product.name = #{name} </if>
+  	<if test="price!=null"> and product.price = #{price} </if>
+  	<if test="content!=null"> and product.content = #{content} </if>
+  	<if test="sign!=null"> and product.sign = #{sign} </if>
+  	<if test="isExpired!=null"> and product.is_expired = #{isExpired} </if>
+  	<if test="day!=null"> and product.day = #{day} </if>
+  	<if test="type!=null"> and product.type = #{type} </if>
+  	<if test="html!=null"> and product.html = #{html} </if>
+  </sql>
+  
+  <select id="select" resultMap="BaseResultMap"  >
+    select 
+    <include refid="Base_Column_List" />
+    from product product
+    <include refid="baseReadMapper.searchSql" />
+    <include refid="Base_Where_Sql" />
+    <include refid="baseReadMapper.orderSql" />
+  </select>
+  
+  <select id="count" resultType="Integer"  >
+    select 
+    	count(id)
+    from product product
+    <include refid="baseReadMapper.searchSql" />
+    <include refid="Base_Where_Sql" />
+  </select>
+  
+  <select id="sum" resultType="java.math.BigDecimal"  >
+    select 
+    	ifnull(sum(${sumItem}),0) 
+    from product product
+    <include refid="baseReadMapper.searchSql" />
+    <include refid="Base_Where_Sql" />
+  </select>
+  
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

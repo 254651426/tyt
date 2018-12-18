@@ -1,0 +1,10 @@
+package com.bquan.dao.read;
+
+/**
+ * 节点线路 DAO读接口
+ * @author liuxiaokang
+ * @createTime 2016-08-24
+ */
+public interface UserLineReadMapper<UserLine> extends BaseReadMapper<UserLine>{
+    
+}

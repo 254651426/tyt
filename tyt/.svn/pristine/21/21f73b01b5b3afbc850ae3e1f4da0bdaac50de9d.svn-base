@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>用户日志</title>
+<#include "header.html" />
+</head>
+<body>
+<div id="useLogApp" v-cloak>
+	<div v-show="showList">
+		<div class="grid-btn">
+			<div class="form-group col-sm-2">
+				<select v-model="q.searchBy" class="form-control">
+					<option value="">请选择查询项</option>
+					<option value="access_address">访问网址</option>
+					<option value="ip">本机ip地址</option>
+					<option value="macadress">网卡地址</option>  
+					<option value="access_time">访问时间</option>
+				</select>
+			</div>
+			<div class="form-group col-sm-2">
+				<input type="text" class="form-control" v-model="q.keyword" @keyup.enter="query" placeholder="请输入查询值">
+			</div>
+			<a class="btn btn-default" @click="query">查询</a>
+		</div>
+	    <table class="qrcode-box">
+			<thead>
+				<tr>
+					<th>
+						<input type="checkbox" class="fan-checkbox" v-model="checkAll" @click="checkedAll()">
+					</th>
+					<th>本机ip地址</th>
+			        <th>访问网址</th>
+			        <th>访问时间</th>
+			        <th>网卡地址</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr v-for="item in params">
+					<td><input type="checkbox" :value="item.id" class="fan-checkbox" v-model='ischeckdate' /></td>
+						<td>{{ item.ip }}</td>
+						<td>{{ item.accessAddress }}</td>
+						<td>{{ item.accessTime  | time }}</td>
+			        	<td>{{ item.macadress }}</td>
+				</tr>
+			</tbody>
+		</table>
+	    <uib-pagination :total-items="totalItems" style="padding-left:42% ;float: left;"  v-model="pagination" :max-size="maxSize" :items-per-page="pageSize" class="pagination-sm" :boundary-link-numbers="false" :boundary-links="true" previous-text="上一页" next-text="下一页" first-text="首页" last-text="尾页" :rotate="false" @change="pageChanged" > </uib-pagination>
+	    <div class="page-div" >{{pagination.currentPage}}-{{pagination.numPages}}    共{{totalItems}}条</div>
+    	<select class="page-select" v-model="pageSize"  @change = "pageNum">
+        	<option value="10">10</option> 
+        	<option value="20">20</option>
+        	<option value="30">30</option>
+        </select>
+    </div>
+     
+   	<div v-show="!showList" class="panel panel-default">
+		<div class="panel-heading">{{title}}</div>
+		<form class="form-horizontal">
+			<div class="form-group">
+			   	<div class="col-sm-2 control-label"></div>
+			   	<div class="col-sm-10">
+			      <input type="text" class="form-control" v-model="useLog.userId" placeholder="userId"/>
+			    </div>
+			</div>
+			<div class="form-group">
+			   	<div class="col-sm-2 control-label"></div>
+			   	<div class="col-sm-10">
+			      <input type="text" class="form-control" v-model="useLog.createTime" placeholder="createTime"/>
+			    </div>
+			</div>
+			<div class="form-group">
+			   	<div class="col-sm-2 control-label">è¿žæŽ¥ç±»åž‹</div>
+			   	<div class="col-sm-10">
+			      <input type="text" class="form-control" v-model="useLog.type" placeholder="type"/>
+			    </div>
+			</div>
+			<div class="form-group">
+			   	<div class="col-sm-2 control-label">æµè§ˆè®°å½•</div>
+			   	<div class="col-sm-10">
+			      <input type="text" class="form-control" v-model="useLog.info" placeholder="info"/>
+			    </div>
+			</div>
+			<div class="form-group">
+			   	<div class="col-sm-2 control-label">访问网址</div>
+			   	<div class="col-sm-10">
+			      <input type="text" class="form-control" v-model="useLog.accessAddress" placeholder="accessAddress"/>
+			    </div>
+			</div>
+			<div class="form-group">
+			   	<div class="col-sm-2 control-label">æºip</div>
+			   	<div class="col-sm-10">
+			      <input type="text" class="form-control" v-model="useLog.realIp" placeholder="realIp"/>
+			    </div>
+			</div>
+			<div class="form-group">
+			   	<div class="col-sm-2 control-label">本机ip地址</div>
+			   	<div class="col-sm-10">
+			      <input type="text" class="form-control" v-model="useLog.ip" placeholder="ip"/>
+			    </div>
+			</div>
+			<div class="form-group">
+			   	<div class="col-sm-2 control-label">网卡地址</div>
+			   	<div class="col-sm-10">
+			      <input type="text" class="form-control" v-model="useLog.macadress" placeholder="macadress"/>
+			    </div>
+			</div>
+			<div class="form-group">
+			   	<div class="col-sm-2 control-label">访问时间</div>
+			   	<div class="col-sm-10">
+			      <input type="text" class="form-control" v-model="useLog.accessTime" placeholder="accessTime"/>
+			    </div>
+			</div>
+			<div class="form-group">
+				<div class="col-sm-2 control-label"></div> 
+				<input type="button" class="btn btn-primary" @click="saveOrUpdate" value="确定"/>
+				&nbsp;&nbsp;<input type="button" class="btn btn-warning" @click="reload" value="返回"/>
+			</div>
+		</form>
+	</div>
+</div>
+
+<script src="${rc.contextPath}/js/sys/useLog.js?_${.now?long}"></script>
+</body>
+</html>

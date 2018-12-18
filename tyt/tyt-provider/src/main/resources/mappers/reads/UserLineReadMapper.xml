@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bquan.dao.read.UserLineReadMapper" >
+  <resultMap id="BaseResultMap" type="com.bquan.entity.mysql.UserLine" >
+    	<result column="userLine_id" property="id" />
+    	<result column="userLine_user_ip" property="userIp" />
+    	<result column="userLine_area" property="area" />
+    	<result column="userLine_is_del" property="isDel" />
+    	<result column="userLine_create_date" property="createDate" />
+    	<result column="userLine_port" property="port" />
+    	<result column="userLine_http" property="http" />
+    	<result column="userLine_level" property="level" />
+    	<result column="userLine_def_count" property="defCount" />
+    	<result column="userLine_rel_count" property="relCount" />
+    	<result column="userLine_com_count" property="comCount" />
+    	<result column="userLine_com_count_two" property="comCountTwo" />
+    	<result column="userLine_status" property="status" />
+    	<result column="userLine_line_ip" property="lineIp" />
+    	<result column="userLine_is_free" property="isFree" />
+    	<result column="userLine_html" property="html" />
+    	<result column="userLine_ip_count" property="ipCount" />
+    	<result column="userLine_type" property="type" />
+    	<result column="userLine_password" property="password" />
+    	<result column="userLine_encryption_mode" property="encryptionMode" />
+    	<result column="userLine_img_url" property="imgUrl" />
+    	<result column="userLine_pid" property="pid" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+		userLine.id as userLine_id,
+		userLine.user_ip as userLine_user_ip,
+		userLine.area as userLine_area,
+		userLine.is_del as userLine_is_del,
+		userLine.create_date as userLine_create_date,
+		userLine.port as userLine_port,
+		userLine.http as userLine_http,
+		userLine.level as userLine_level,
+		userLine.def_count as userLine_def_count,
+		userLine.rel_count as userLine_rel_count,
+		userLine.com_count as userLine_com_count,
+		userLine.com_count_two as userLine_com_count_two,
+		userLine.status as userLine_status,
+		userLine.line_ip as userLine_line_ip,
+		userLine.is_free as userLine_is_free,
+		userLine.html as userLine_html,
+		userLine.ip_count as userLine_ip_count,
+		userLine.encryption_mode as userLine_encryption_mode,
+		userLine.type as userLine_type,
+		userLine.password as userLine_password,
+		userLine.img_url as userLine_img_url,
+		userLine.pid as userLine_pid
+  </sql>
+  
+  <sql id="Base_Where_Sql" >
+  	<if test="id!=null"> and userLine.id = #{id} </if>
+  	<if test="userIp!=null"> and userLine.user_ip = #{userIp} </if>
+  	<if test="area!=null"> and userLine.area = #{area} </if>
+  	<if test="isDel!=null"> and userLine.is_del = #{isDel} </if>
+  	<if test="createDate!=null"> and userLine.create_date = #{createDate} </if>
+  	<if test="port!=null"> and userLine.port = #{port} </if>
+  	<if test="http!=null"> and userLine.http = #{http} </if>
+  	<if test="level!=null"> and userLine.level = #{level} </if>
+  	<if test="defCount!=null"> and userLine.def_count = #{defCount} </if>
+  	<if test="relCount!=null"> and userLine.rel_count = #{relCount} </if>
+  	<if test="comCount!=null"> and userLine.com_count = #{comCount} </if>
+  	<if test="comCountTwo!=null"> and userLine.com_count_two = #{comCountTwo} </if>
+  	<if test="status!=null"> and userLine.status = #{status} </if>
+  	<if test="lineIp!=null"> and userLine.line_ip = #{lineIp} </if>
+  	<if test="isFree!=null"> and userLine.is_free = #{isFree} </if>
+  	<if test="html!=null"> and userLine.html = #{html} </if>
+  	<if test="ipCount!=null"> and userLine.ip_count = #{ipCount} </if>
+  	<if test="type!=null"> and userLine.type = #{type} </if>
+  	<if test="password!=null"> and userLine.password = #{password} </if>
+  	<if test="imgUrl!=null"> and userLine.img_url = #{imgUrl} </if>
+  	<if test="encryptionMode!=null"> and userLine.encryption_mode = #{encryptionMode} </if>
+  </sql>
+  
+  <select id="select" resultMap="BaseResultMap"  >
+    select 
+    <include refid="Base_Column_List" />
+    from user_line userLine
+    <include refid="baseReadMapper.searchSql" />
+    <include refid="Base_Where_Sql" />
+    <include refid="baseReadMapper.orderSql" />
+  </select>
+  
+  <select id="count" resultType="Integer"  >
+    select 
+    	count(id)
+    from user_line userLine
+    <include refid="baseReadMapper.searchSql" />
+    <include refid="Base_Where_Sql" />
+  </select>
+  
+  <select id="sum" resultType="java.math.BigDecimal"  >
+    select 
+    	ifnull(sum(${sumItem}),0) 
+    from user_line userLine
+    <include refid="baseReadMapper.searchSql" />
+    <include refid="Base_Where_Sql" />
+  </select>
+  
+  <select id="queryListParentId" resultType="com.bquan.entity.mysql.UserLine">
+		select * from user_line where pid = #{parentId} order by pid asc 
+	</select>
+	
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

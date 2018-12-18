@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>天眼通用户</title>
+<#include "header.html" />
+</head>
+<script src="${rc.contextPath}/statics/common/js/jquery.js?t=${.now?long}"></script>
+<script src="${rc.contextPath}/statics/common/js/jquery.jqplot.min.js?t=${.now?long}"></script>
+<script src="${rc.contextPath}/statics/common/js/jqplot.canvasAxisTickRenderer.js?t=${.now?long}"></script>
+<script src="${rc.contextPath}/statics/common/js/jqplot.canvasTextRenderer.js?t=${.now?long}"></script>
+<script src="${rc.contextPath}/statics/common/js/jqplot.canvasAxisLabelRenderer.js?t=${.now?long}"></script>
+<script src="${rc.contextPath}/statics/common/js/jqplot.categoryAxisRenderer.js?t=${.now?long}"></script>
+<script src="${rc.contextPath}/statics/common/js/jqplot.barRenderer.js?t=${.now?long}"></script>
+<script src="${rc.contextPath}/statics/common/js/jqplot.pointLabels.js?t=${.now?long}"></script>
+<script src="${rc.contextPath}/statics/common/js/jqplot.dateAxisRenderer.js?t=${.now?long}"></script>
+
+<script type="text/javascript">
+$().ready(function() {
+	
+	$.ajax({
+		type: "POST",
+	    url: "${rc.contextPath}/sys/orders/stamoney",
+	    data: {
+	    	
+	    },
+	    contentType : "application/x-www-form-urlencoded",
+		dataType:'json',
+	    success: function(r){
+	    	
+	    	var allPayList = r.allPayList;
+	    	var allNotPayList = r.allNotPayList;
+	    	var dateList = r.dateList;
+	    	
+	    	ticksArr = []
+	    	plot1 = $.jqplot('chartdiv', [
+	    		allNotPayList,
+	    		allPayList
+	    		],{
+	        	legend: {
+	                 show: true,
+	                 location: 'ne'
+	             },
+	    		title:'用户统计报表(按天)',
+	    		seriesDefaults : {
+	    			showMarker: true,
+	    			// 柱状图顶端是否显示值
+	    			pointLabels: { show: true },
+	    	        shadow: true,
+	    	        //使用柱状图表示
+	    			renderer : $.jqplot.BarRenderer, 
+	    			rendererOptions : {
+	    				// 横向显示
+	    				barDirection: 'horizontal'
+	    			}
+	    		},
+	    		series: [{
+	                 label: '未充值总金额'
+	             },
+	    		 {
+	                 label: '充值总金额'
+	             }],
+	             axes: {
+	             	 xaxis: {
+	                     showTicks: true,        // 是否显示刻度线以及坐标轴上的刻度值  
+	                     showTickMarks: true,    //设置是否显示刻度
+	                     tickOptions: {
+	                         show: true,
+	                         fontSize: '14px',
+	                         fontFamily: 'tahoma,arial,"Hiragino Sans GB",宋体b8b体,sans-serif',
+	                         showLabel: true, //是否显示刻度线以及坐标轴上的刻度值
+	                         showMark: true,//设置是否显示刻度
+	                         showGridline: false // 是否在图表区域显示刻度值方向的网格
+	                     }
+	                 },
+	                 yaxis: {
+	                 	 showLabel: false, 
+	                 	 showTickMarks: false,
+	                     renderer: $.jqplot.CategoryAxisRenderer,
+	                     tickOptions: {
+	                         show: true,
+	                         fontSize: '14px',
+	                         fontFamily: 'tahoma,arial,"Hiragino Sans GB",宋体b8b体,sans-serif',
+	                         showLabel: true, //是否显示刻度线以及坐标轴上的刻度值
+	                         showMark: true,//设置是否显示刻度
+	                         //showGridline: false ,// 是否在图表区域显示刻度值方向的网格
+	                         showGridline: true
+	                     },
+	                     ticks: dateList
+	                 }
+	             }
+	    	});
+		}
+	});
+	
+})
+</script>
+<body class="list">
+	<div class="bar">
+		用户报表
+	</div>
+	<div>
+		<div id="chartdiv" style="height:600px;width:100%; "></div>
+	</div>
+</body>
+
+</html>

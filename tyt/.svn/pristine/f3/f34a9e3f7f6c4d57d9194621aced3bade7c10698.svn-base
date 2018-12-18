@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>数据字典</title>
+<#include "header.html" />
+</head>
+<body>
+<div id="dictionaryApp" v-cloak>
+	<div v-show="showList">
+		<div class="grid-btn">
+			<div class="form-group col-sm-2">
+				<select v-model="q.searchBy" class="form-control">
+					<option value="">请选择查询项</option>
+					<option value="key_text">key</option>
+					<option value="value_text">value</option>
+					<option value="name_text">名称</option>
+					<option value="type_text">类型</option>
+					<option value="describe_text">描述</option>
+				</select>
+			</div>
+			<div class="form-group col-sm-2">
+				<input type="text" class="form-control" v-model="q.keyword" @keyup.enter="query" placeholder="请输入查询值">
+			</div>
+			<a class="btn btn-default" @click="query">查询</a>
+			<@shiroPermission role="sys:dictionary:save" ></@shiroPermission>
+			<a class="btn btn-primary" @click="add"><i class="fa fa-plus"></i>&nbsp;新增</a>
+			
+		</div>
+	    <table class="qrcode-box">
+			<thead>
+				<tr>
+					<th>名称</th>
+					<th>key</th>
+					<th>value</th>
+					<th>类型</th>
+					<th>描述</th>
+					<th>更新</th>
+					<th>排序</th>
+					<th>操作</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr v-for="item in params">
+					<td>{{ item.nameText }}</td>
+					<td>{{ item.keyText }}</td>
+					<td>{{item.valueText}}</td>
+					<td>{{item.typeText}}</td>
+					<td>{{item.describeText}}</td>
+					<td>{{ item.isUpdate }}</td>
+					<td>{{ item.orderList }}</td>
+					<td><a class="btn btn-primary" href="javascript:void(0)" @click="update(item.id)" >修改</a></td>
+				</tr>
+			</tbody>
+		</table>
+	    <uib-pagination :total-items="totalItems" style="padding-left:42% ;float: left;"  v-model="pagination" :max-size="maxSize" :items-per-page="pageSize" class="pagination-sm" :boundary-link-numbers="false" :boundary-links="true" previous-text="上一页" next-text="下一页" first-text="首页" last-text="尾页" :rotate="false" @change="pageChanged" > </uib-pagination>
+	    <div class="page-div" >{{pagination.currentPage}}-{{pagination.numPages}}    共{{totalItems}}条</div>
+    	<select class="page-select" v-model="pageSize"  @change = "pageNum">
+        	<option value="10">10</option> 
+        	<option value="20">20</option>
+        	<option value="30">30</option>
+        </select>
+    </div>
+     
+   	<div v-show="!showList" class="panel panel-default">
+		<div class="panel-heading">{{title}}</div>
+		<form class="form-horizontal">
+			<div class="form-group">
+			   	<div class="col-sm-2 control-label">key</div>
+			   	<div class="col-sm-10">
+			      <input type="text" class="form-control" v-model="dictionary.keyText" placeholder="keyText"/>
+			    </div>
+			</div>
+			<div class="form-group">
+			   	<div class="col-sm-2 control-label">value</div>
+			   	<div class="col-sm-10">
+			      <input type="text" class="form-control" v-model="dictionary.valueText" placeholder="valueText"/>
+			    </div>
+			</div>
+			<div class="form-group">
+			   	<div class="col-sm-2 control-label">名称</div>
+			   	<div class="col-sm-10">
+			      <input type="text" class="form-control" v-model="dictionary.nameText" placeholder="nameText"/>
+			    </div>
+			</div>
+			<div class="form-group">
+			   	<div class="col-sm-2 control-label">类型</div>
+			   	<div class="col-sm-10">
+			      <input type="text" class="form-control" v-model="dictionary.typeText" placeholder="typeText"/>
+			    </div>
+			</div>
+			<div class="form-group">
+			   	<div class="col-sm-2 control-label">描述</div>
+			   	<div class="col-sm-10">
+			      <input type="text" class="form-control" v-model="dictionary.describeText" placeholder="describeText"/>
+			    </div>
+			</div>
+			<div class="form-group">
+				<div class="col-sm-2 control-label">更新</div> 
+				<label class="radio-inline">
+				  <input type="radio" name="status" value="true" v-model="dictionary.isUpdate"/> 是
+				</label>
+				<label class="radio-inline">
+				  <input type="radio" name="status" value="false" v-model="dictionary.isUpdate"/> 否
+				</label>
+			</div>
+			<div class="form-group">
+				<div class="col-sm-2 control-label">文件</div> 
+				<label class="radio-inline">
+				  <input type="radio" name="status" value="true" v-model="dictionary.isFile"/> 是
+				</label>
+				<label class="radio-inline">
+				  <input type="radio" name="status" value="false" v-model="dictionary.isFile"/> 否
+				</label>
+			</div>
+			<div class="form-group">
+			   	<div class="col-sm-2 control-label"></div>
+			   	<div class="col-sm-10">
+			      <input type="text" class="form-control" v-model="dictionary.orderList" placeholder="orderList"/>
+			    </div>
+			</div>
+			<div class="form-group">
+				<div class="col-sm-2 control-label"></div> 
+				<input type="button" class="btn btn-primary" @click="saveOrUpdate" value="确定"/>
+				&nbsp;&nbsp;<input type="button" class="btn btn-warning" @click="reload" value="返回"/>
+			</div>
+		</form>
+	</div>
+</div>
+
+<script src="${rc.contextPath}/js/sys/dictionary.js?_${.now?long}"></script>
+</body>
+</html>

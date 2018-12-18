@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bquan.dao.read.CommissionRateReadMapper" >
+  <resultMap id="BaseResultMap" type="com.bquan.entity.mysql.CommissionRate" >
+    	<result column="commissionRate_id" property="id" />
+    	<result column="commissionRate_create_date" property="createDate" />
+    	<result column="commissionRate_modify_date" property="modifyDate" />
+    	<result column="commissionRate_username" property="username" />
+    	<result column="commissionRate_write_rate" property="writeRate" />
+    	<result column="commissionRate_show_rate" property="showRate" />
+    	<result column="commissionRate_limit_send_time" property="limitSendTime" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+		commissionRate.id as commissionRate_id,
+		commissionRate.create_date as commissionRate_create_date,
+		commissionRate.modify_date as commissionRate_modify_date,
+		commissionRate.username as commissionRate_username,
+		commissionRate.write_rate as commissionRate_write_rate,
+		commissionRate.show_rate as commissionRate_show_rate,
+		commissionRate.limit_send_time as commissionRate_limit_send_time
+  </sql>
+  
+  <sql id="Base_Where_Sql" >
+  	<if test="id!=null"> and commissionRate.id = #{id} </if>
+  	<if test="createDate!=null"> and commissionRate.create_date = #{createDate} </if>
+  	<if test="modifyDate!=null"> and commissionRate.modify_date = #{modifyDate} </if>
+  	<if test="username!=null"> and commissionRate.username = #{username} </if>
+  	<if test="writeRate!=null"> and commissionRate.write_rate = #{writeRate} </if>
+  	<if test="showRate!=null"> and commissionRate.show_rate = #{showRate} </if>
+  </sql>
+  
+  <select id="select" resultMap="BaseResultMap"  >
+    select 
+    <include refid="Base_Column_List" />
+    from ct_commission_rate commissionRate
+    <include refid="baseReadMapper.searchSql" />
+    <include refid="Base_Where_Sql" />
+    <include refid="baseReadMapper.orderSql" />
+  </select>
+  
+  <select id="count" resultType="Integer"  >
+    select 
+    	count(id)
+    from ct_commission_rate commissionRate
+    <include refid="baseReadMapper.searchSql" />
+    <include refid="Base_Where_Sql" />
+  </select>
+  
+  <select id="sum" resultType="java.math.BigDecimal"  >
+    select 
+    	ifnull(sum(${sumItem}),0)
+    from ct_commission_rate commissionRate
+    <include refid="baseReadMapper.searchSql" />
+    <include refid="Base_Where_Sql" />
+  </select>
+  
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

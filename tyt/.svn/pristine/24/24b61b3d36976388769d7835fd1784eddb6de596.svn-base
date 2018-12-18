@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>留言管理</title>
+<#include "header.html" />
+</head>
+<body>
+<div id="leaveMessageApp" v-cloak>
+	<div v-show="showList">
+		<div class="grid-btn">
+			<div class="form-group col-sm-2">
+				<select v-model="q.searchBy" class="form-control">
+					<option value="">请选择查询项</option>
+					<option value="id"></option>
+					<option value="info">留言</option>
+					<option value="back_info">回复</option>
+				</select>
+			</div>
+			<div class="form-group col-sm-2">
+				<input type="text" class="form-control" v-model="q.keyword" @keyup.enter="query" placeholder="请输入查询值">
+			</div>
+			<a class="btn btn-default" @click="query">查询</a>
+		</div>
+	    <table class="qrcode-box">
+			<thead>
+				<tr>
+					<th>用户</th>
+			        <th>留言</th>
+		        	<th>创建时间</th>
+		        	<th>回复</th>
+					<th>操作</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr v-for="item in params">
+					<td v-if="item.user">{{ item.user.username }}</td><td v-else></td>
+		        	<td>{{ item.info }}</td>
+		        	<td>{{ item.createTime | time }}</td>
+		        	<td>{{ item.backInfo }}</td>
+					<td>
+		        		<a class="btn btn-primary" href="javascript:void(0)" @click="update(item.id)" >修改</a>
+		        		<a class="btn btn-danger" href="javascript:void(0)" @click="del(item.id)" >删除</a>
+		        	</td>
+				</tr>
+			</tbody>
+		</table>
+	    <uib-pagination :total-items="totalItems" style="padding-left:42% ;float: left;"  v-model="pagination" :max-size="maxSize" :items-per-page="pageSize" class="pagination-sm" :boundary-link-numbers="false" :boundary-links="true" previous-text="上一页" next-text="下一页" first-text="首页" last-text="尾页" :rotate="false" @change="pageChanged" > </uib-pagination>
+	    <div class="page-div" >{{pagination.currentPage}}-{{pagination.numPages}}    共{{totalItems}}条</div>
+    	<select class="page-select" v-model="pageSize"  @change = "pageNum">
+        	<option value="10">10</option> 
+        	<option value="20">20</option>
+        	<option value="30">30</option>
+        </select>
+    </div>
+     
+   	<div v-show="!showList" class="panel panel-default">
+		<div class="panel-heading">{{title}}</div>
+		<form class="form-horizontal">
+			<div class="form-group">
+			   	<div class="col-sm-2 control-label">留言</div>
+			   	<div class="col-sm-10">
+			      <input type="text" class="form-control" v-model="leaveMessage.info" placeholder="info"/>
+			    </div>
+			</div>
+			<div class="form-group">
+			   	<div class="col-sm-2 control-label">创建时间</div>
+			   	<div class="col-sm-10">
+			      <input type="text" class="form-control" v-model="leaveMessage.createTime" placeholder="createTime"/>
+			    </div>
+			</div>
+			<div class="form-group">
+			   	<div class="col-sm-2 control-label">用户id</div>
+			   	<div class="col-sm-10">
+			      <input type="text" class="form-control" v-model="leaveMessage.userId" placeholder="userId"/>
+			    </div>
+			</div>
+			<div class="form-group">
+				<div class="col-sm-2 control-label">状态</div> 
+				<label class="radio-inline">
+				  <input type="radio" name="status" value="true" v-model="leaveMessage.status"/> 是
+				</label>
+				<label class="radio-inline">
+				  <input type="radio" name="status" value="false" v-model="leaveMessage.status"/> 否
+				</label>
+			</div>
+			<div class="form-group">
+			   	<div class="col-sm-2 control-label">回复id</div>
+			   	<div class="col-sm-10">
+			      <input type="text" class="form-control" v-model="leaveMessage.backUserId" placeholder="backUserId"/>
+			    </div>
+			</div>
+			<div class="form-group">
+			   	<div class="col-sm-2 control-label">回复信息</div>
+			   	<div class="col-sm-10">
+			      <input type="text" class="form-control" v-model="leaveMessage.backInfo" placeholder="backInfo"/>
+			    </div>
+			</div>
+			<div class="form-group">
+			   	<div class="col-sm-2 control-label">回复时间</div>
+			   	<div class="col-sm-10">
+			      <input type="text" class="form-control" v-model="leaveMessage.backTime" placeholder="backTime"/>
+			    </div>
+			</div>
+			<div class="form-group">
+				<div class="col-sm-2 control-label"></div> 
+				<input type="button" class="btn btn-primary" @click="saveOrUpdate" value="确定"/>
+				&nbsp;&nbsp;<input type="button" class="btn btn-warning" @click="reload" value="返回"/>
+			</div>
+		</form>
+	</div>
+</div>
+
+<script src="${rc.contextPath}/js/sys/leaveMessage.js?_${.now?long}"></script>
+</body>
+</html>

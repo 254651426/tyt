@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bquan.dao.write.UserTokenWriteMapper" >
+  
+  <delete id="delete" parameterType="com.bquan.entity.mysql.UserToken" >
+  	<if test="id!=null">
+	  	delete from 
+			user_token
+	    where 
+	    	id = #{id}
+  	</if>
+  </delete>
+  
+  <insert id="insert" parameterType="com.bquan.entity.mysql.UserToken" >
+		INSERT INTO user_token (
+    		id
+            ,username
+            ,token
+            ,create_date
+            ,modify_date
+		)
+		VALUES
+		(
+			#{id}
+            ,#{username}
+            ,#{token}
+            ,#{createDate}
+            ,#{modifyDate}
+		)
+	</insert>
+	
+	<update id="update" parameterType="com.bquan.entity.mysql.UserToken">
+		UPDATE user_token
+		<set>
+			<if test="id!= null">id = #{id}</if>
+            <if test="username!= null">,username = #{username}</if>
+            <if test="token!= null">,token = #{token}</if>
+            <if test="createDate!= null">,create_date = #{createDate}</if>
+            <if test="modifyDate!= null">,modify_date = #{modifyDate}</if>
+		</set>
+		WHERE id = #{id}
+	</update>
+	
+</mapper>
+

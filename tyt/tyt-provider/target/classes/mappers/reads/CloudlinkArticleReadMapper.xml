@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bquan.dao.read.CloudlinkArticleReadMapper" >
+  <resultMap id="BaseResultMap" type="com.bquan.entity.mysql.CloudlinkArticle" >
+    	<result column="cloudlinkArticle_id" property="id" />
+    	<result column="cloudlinkArticle_create_date" property="createDate" />
+    	<result column="cloudlinkArticle_modify_date" property="modifyDate" />
+    	<result column="cloudlinkArticle_content" property="content" />
+    	<result column="cloudlinkArticle_from_text" property="fromText" />
+    	<result column="cloudlinkArticle_hits" property="hits" />
+    	<result column="cloudlinkArticle_like_hits" property="likeHits" />
+    	<result column="cloudlinkArticle_order_list" property="orderList" />
+    	<result column="cloudlinkArticle_title" property="title" />
+    	<result column="cloudlinkArticle_logo_url" property="logoUrl" />
+    	<result column="cloudlinkArticle_status" property="status" />
+    	<result column="cloudlinkArticle_is_today_hot" property="isTodayHot" />
+    	<result column="cloudlinkArticle_logo_url1" property="logoUrl1" />
+    	<result column="cloudlinkArticle_logo_url2" property="logoUrl2" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+		cloudlinkArticle.id as cloudlinkArticle_id,
+		cloudlinkArticle.create_date as cloudlinkArticle_create_date,
+		cloudlinkArticle.modify_date as cloudlinkArticle_modify_date,
+		cloudlinkArticle.content as cloudlinkArticle_content,
+		cloudlinkArticle.from_text as cloudlinkArticle_from_text,
+		cloudlinkArticle.hits as cloudlinkArticle_hits,
+		cloudlinkArticle.like_hits as cloudlinkArticle_like_hits,
+		cloudlinkArticle.order_list as cloudlinkArticle_order_list,
+		cloudlinkArticle.title as cloudlinkArticle_title,
+		cloudlinkArticle.logo_url as cloudlinkArticle_logo_url,
+		cloudlinkArticle.status as cloudlinkArticle_status,
+		cloudlinkArticle.is_today_hot as cloudlinkArticle_is_today_hot,
+		cloudlinkArticle.logo_url1 as cloudlinkArticle_logo_url1,
+		cloudlinkArticle.logo_url2 as cloudlinkArticle_logo_url2
+  </sql>
+  
+  <sql id="Base_Where_Sql" >
+  	<if test="id!=null"> and cloudlinkArticle.id = #{id} </if>
+  	<if test="createDate!=null"> and cloudlinkArticle.create_date = #{createDate} </if>
+  	<if test="modifyDate!=null"> and cloudlinkArticle.modify_date = #{modifyDate} </if>
+  	<if test="content!=null"> and cloudlinkArticle.content = #{content} </if>
+  	<if test="fromText!=null"> and cloudlinkArticle.from_text = #{fromText} </if>
+  	<if test="hits!=null"> and cloudlinkArticle.hits = #{hits} </if>
+  	<if test="likeHits!=null"> and cloudlinkArticle.like_hits = #{likeHits} </if>
+  	<if test="orderList!=null"> and cloudlinkArticle.order_list = #{orderList} </if>
+  	<if test="title!=null"> and cloudlinkArticle.title = #{title} </if>
+  	<if test="logoUrl!=null"> and cloudlinkArticle.logo_url = #{logoUrl} </if>
+  	<if test="status!=null"> and cloudlinkArticle.status = #{status} </if>
+  	<if test="isTodayHot!=null"> and cloudlinkArticle.is_today_hot = #{isTodayHot} </if>
+  	<if test="logoUrl1!=null"> and cloudlinkArticle.logo_url1 = #{logoUrl1} </if>
+  	<if test="logoUrl2!=null"> and cloudlinkArticle.logo_url2 = #{logoUrl2} </if>
+  </sql>
+  
+  <select id="select" resultMap="BaseResultMap"  >
+    select 
+    <include refid="Base_Column_List" />
+    from ct_cloudlink_article cloudlinkArticle
+    <include refid="baseReadMapper.searchSql" />
+    <include refid="Base_Where_Sql" />
+    <include refid="baseReadMapper.orderSql" />
+  </select>
+  
+  <select id="count" resultType="Integer"  >
+    select 
+    	count(id)
+    from ct_cloudlink_article cloudlinkArticle
+    <include refid="baseReadMapper.searchSql" />
+    <include refid="Base_Where_Sql" />
+  </select>
+  
+  <select id="sum" resultType="java.math.BigDecimal"  >
+    select 
+    	ifnull(sum(${sumItem}),0)
+    from ct_cloudlink_article cloudlinkArticle
+    <include refid="baseReadMapper.searchSql" />
+    <include refid="Base_Where_Sql" />
+  </select>
+  
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

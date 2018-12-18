@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+    xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+	http://www.springframework.org/schema/aop
+    http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+    http://www.springframework.org/schema/context
+    http://www.springframework.org/schema/context/spring-context-2.5.xsd
+	http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+
+	<!-- 扫描注解配置 -->
+	<dubbo:annotation package="com.bquan" />
+	
+	<!-- 配置springUtil工具类 -->
+	<bean id="springUtil" class="com.bquan.util.SpringUtil" lazy-init="false" />
+
+	<!-- mybatis 相关 -->
+	<import resource="../../mybatis/mybatis-spring.xml"/>
+	
+	<!-- 事务控制 -->
+	<import resource="../../mybatis/spring-transaction.xml"/>
+	
+	<!-- 加载redis -->
+	<import resource="../../redis/redis-spring.xml"/>
+	
+	<!-- 加载mongodb -->
+	<import resource="../../mongodb/mongodb-spring.xml"/>
+	
+	<!-- 加载provider配置文件 -->
+	<import resource ="classpath*:provider/*.xml" />
+	
+</beans>

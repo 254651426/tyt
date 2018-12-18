@@ -1,0 +1,12 @@
+package com.bquan.service.write;
+
+import com.bquan.entity.mysql.WebDomain;
+
+/**
+ * 列表设置属性 Service写数据接口
+ * @author liuxiaokang
+ * @createTime 2016-08-20
+ */
+public interface WebDomainWriteService extends BaseWriteService<WebDomain>{
+
+}

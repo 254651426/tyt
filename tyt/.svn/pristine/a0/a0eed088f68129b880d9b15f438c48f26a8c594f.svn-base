@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bquan.dao.write.UserWriteMapper">
+
+	<delete id="delete" parameterType="com.bquan.entity.mysql.User">
+		<if test="id!=null">
+			delete from
+			user
+			where
+			id = #{id}
+		</if>
+	</delete>
+
+	<delete id="deleteBatch">
+		delete from user where id in
+		<foreach item="id" collection="array" open="(" separator=","
+			close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+	<insert id="insert" parameterType="com.bquan.entity.mysql.User">
+		INSERT INTO user (
+		id
+		,username
+		,buy_date
+		,create_date
+		,time_left
+		,phone
+		,status
+		,is_black
+		,user_source
+		,password
+		,level
+		,token
+		,fmcode
+		,login_date
+		,ip
+		,version
+		,vip_end_time
+		,phone_end_time
+		,share_code
+		,left_count
+		,is_register_send
+		,is_vip_send
+		,free_start_time
+		,sign_time
+		,is_email_send
+		,commission_amount
+		,modify_date
+		,send_date
+		,shadowsocks_password
+		,shadowsocks_port
+		,depname
+		,note
+		,type
+		)
+		VALUES
+		(
+		#{id}
+		,#{username}
+		,#{buyDate}
+		,#{createDate}
+		,#{timeLeft}
+		,#{phone}
+		,#{status}
+		,#{isBlack}
+		,#{userSource}
+		,#{password}
+		,#{level}
+		,#{token}
+		,#{fmcode}
+		,#{loginDate}
+		,#{ip}
+		,#{version}
+		,#{vipEndTime}
+		,#{phoneEndTime}
+		,#{shareCode}
+		,#{leftCount}
+		,#{isRegisterSend}
+		,#{isVipSend}
+		,#{freeStartTime}
+		,#{signTime}
+		,#{isEmailSend}
+		,#{commissionAmount}
+		,#{modifyDate}
+		,#{sendDate}
+		,#{shadowsocksPassword}
+		,#{shadowsocksPort}
+		,#{depname}
+		,#{note}
+		,#{type}
+		)
+	</insert>
+
+	<update id="update" parameterType="com.bquan.entity.mysql.User">
+		UPDATE user
+		<set>
+			<if test="id!= null">id = #{id}</if>
+			<if test="username!= null">,username = #{username}</if>
+			<if test="buyDate!= null">,buy_date = #{buyDate}</if>
+			<if test="createDate!= null">,create_date = #{createDate}</if>
+			<if test="timeLeft!= null">,time_left = #{timeLeft}</if>
+			<if test="phone!= null">,phone = #{phone}</if>
+			<if test="status!= null">,status = #{status}</if>
+			<if test="isBlack!= null">,is_black = #{isBlack}</if>
+			<if test="userSource!= null">,user_source = #{userSource}</if>
+			<if test="password!= null">,password = #{password}</if>
+			<if test="level!= null">,level = #{level}</if>
+			<if test="token!= null">,token = #{token}</if>
+			<if test="fmcode!= null">,fmcode = #{fmcode}</if>
+			<if test="loginDate!= null">,login_date = #{loginDate}</if>
+			<if test="ip!= null">,ip = #{ip}</if>
+			<if test="version!= null">,version = #{version}</if>
+			<if test="vipEndTime!= null">,vip_end_time = #{vipEndTime}</if>
+			<if test="phoneEndTime!= null">,phone_end_time = #{phoneEndTime}</if>
+			<if test="shareCode!= null">,share_code = #{shareCode}</if>
+			<if test="leftCount!= null">,left_count = #{leftCount}</if>
+			<if test="isRegisterSend!= null">,is_register_send = #{isRegisterSend}</if>
+			<if test="isVipSend!= null">,is_vip_send = #{isVipSend}</if>
+			<if test="freeStartTime!= null">,free_start_time = #{freeStartTime}</if>
+			<if test="signTime!= null">,sign_time = #{signTime}</if>
+			<if test="isEmailSend!= null">,is_email_send = #{isEmailSend}</if>
+			<if test="commissionAmount!= null">,commission_amount = #{commissionAmount}</if>
+			<if test="modifyDate!= null">,modify_date = #{modifyDate}</if>
+			<if test="sendDate!= null">,send_date = #{sendDate}</if>
+			<if test="shadowsocksPassword!= null">,shadowsocks_password = #{shadowsocksPassword}</if>
+			<if test="shadowsocksPort!= null">,shadowsocks_port = #{shadowsocksPort}</if>
+			<if test="depname!= null">,depname = #{depname}</if>
+			<if test="note!= null">,note = #{note}</if>
+		</set>
+		WHERE id = #{id}
+	</update>
+
+</mapper>
+

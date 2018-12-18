@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bquan.dao.read.SendCodeReadMapper" >
+  <resultMap id="BaseResultMap" type="com.bquan.entity.mysql.SendCode" >
+    	<result column="sendCode_id" property="id" />
+    	<result column="sendCode_code" property="code" />
+    	<result column="sendCode_username" property="username" />
+    	<result column="sendCode_send_time" property="sendTime" />
+    	<result column="sendCode_is_expired" property="isExpired" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+		sendCode.id as sendCode_id,
+		sendCode.code as sendCode_code,
+		sendCode.username as sendCode_username,
+		sendCode.send_time as sendCode_send_time,
+		sendCode.is_expired as sendCode_is_expired
+  </sql>
+  
+  <sql id="Base_Where_Sql" >
+  	<if test="id!=null"> and sendCode.id = #{id} </if>
+  	<if test="code!=null"> and sendCode.code = #{code} </if>
+  	<if test="username!=null"> and sendCode.username = #{username} </if>
+  	<if test="sendTime!=null"> and sendCode.send_time = #{sendTime} </if>
+  	<if test="isExpired!=null"> and sendCode.is_expired = #{isExpired} </if>
+  </sql>
+  
+  <select id="select" resultMap="BaseResultMap"  >
+    select 
+    <include refid="Base_Column_List" />
+    from send_code sendCode
+    <include refid="baseReadMapper.searchSql" />
+    <include refid="Base_Where_Sql" />
+    <include refid="baseReadMapper.orderSql" />
+  </select>
+  
+  <select id="count" resultType="Integer"  >
+    select 
+    	count(id)
+    from send_code sendCode
+    <include refid="baseReadMapper.searchSql" />
+    <include refid="Base_Where_Sql" />
+  </select>
+  
+  <select id="sum" resultType="java.math.BigDecimal"  >
+    select 
+    	ifnull(sum(${sumItem}),0) 
+    from send_code sendCode
+    <include refid="baseReadMapper.searchSql" />
+    <include refid="Base_Where_Sql" />
+  </select>
+  
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

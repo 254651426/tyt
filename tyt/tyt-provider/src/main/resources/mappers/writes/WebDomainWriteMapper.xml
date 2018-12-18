@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bquan.dao.write.WebDomainWriteMapper">
+
+	<delete id="delete" parameterType="com.bquan.entity.mysql.WebDomain">
+		<if test="id!=null">
+			delete from
+			web_domain
+			where
+			id = #{id}
+		</if>
+	</delete>
+
+	<delete id="deleteBatch">
+		delete from web_domain where id in
+		<foreach item="id" collection="array" open="(" separator=","
+			close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+	<insert id="insert" parameterType="com.bquan.entity.mysql.WebDomain">
+		INSERT INTO web_domain (
+		id
+		,domain
+		,status
+		,user_id
+		,type
+		,create_date
+		,is_wall
+		)
+		VALUES
+		(
+		#{id}
+		,#{domain}
+		,#{status}
+		,#{userId}
+		,#{type}
+		,#{createDate}
+		,#{isWall}
+		)
+	</insert>
+
+	<insert id="insertBatch" parameterType="com.bquan.entity.mysql.WebDomain">
+		INSERT INTO web_domain (
+		id
+		,domain
+		,status
+		,user_id
+		,type
+		,create_date
+		,is_wall
+		)
+		VALUES
+		<foreach collection="list" item="webDomain" index="index"
+			separator=",">
+			(
+			#{webDomain.id}
+			,#{webDomain.domain}
+			,#{webDomain.status}
+			,#{webDomain.userId}
+			,#{webDomain.type}
+			,#{webDomain.createDate}
+			,#{webDomain.isWall}
+			)
+		</foreach>
+	</insert>
+
+	<update id="update" parameterType="com.bquan.entity.mysql.WebDomain">
+		UPDATE web_domain
+		<set>
+			<if test="id!= null">id = #{id}</if>
+			<if test="domain!= null">,domain = #{domain}</if>
+			<if test="status!= null">,status = #{status}</if>
+			<if test="userId!= null">,user_id = #{userId}</if>
+			<if test="type!= null">,type = #{type}</if>
+			<if test="createDate!= null">,create_date = #{createDate}</if>
+			<if test="isWall!= null">,is_wall = #{isWall}</if>
+		</set>
+		WHERE id = #{id}
+	</update>
+
+</mapper>
+

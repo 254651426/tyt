@@ -1,0 +1,89 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<parent>
+		<groupId>${tyt-groupid}</groupId>
+		<artifactId>tyt</artifactId>
+		<version>${tyt-version}</version>
+	</parent>
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>tyt-web</artifactId>
+	<packaging>war</packaging>
+	<description>管理后台</description>
+
+	<repositories>
+		<repository>
+			<id>nexus</id>
+			<name>123.56.204.25 Nexus Repository</name>
+			<url>http://123.56.204.25:6688/nexus/content/groups/public</url>
+		</repository>
+	</repositories>
+
+	<dependencies>
+
+		<dependency>
+			<groupId>${tyt-groupid}</groupId>
+			<artifactId>tyt-common-web</artifactId>
+			<version>${tyt-version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>${tyt-groupid}</groupId>
+			<artifactId>tyt-api</artifactId>
+			<version>${tyt-version}</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>jcl-over-slf4j</artifactId>
+					<groupId>org.slf4j</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>servlet-api</artifactId>
+					<groupId>javax.servlet</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<dependency>
+			<groupId>com.bquan</groupId>
+			<artifactId>rapid-core</artifactId>
+			<version>4.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.zookeeper</groupId>
+			<artifactId>zookeeper</artifactId>
+			<version>3.3.3</version>
+		</dependency>
+		<dependency>
+			<groupId>com.github.sgroschupf</groupId>
+			<artifactId>zkclient</artifactId>
+			<version>0.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>dubbo</artifactId>
+			<version>2.5.4-SNAPSHOT</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>spring</artifactId>
+					<groupId>org.springframework</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.javassist</groupId>
+			<artifactId>javassist</artifactId>
+			<version>3.15.0-GA</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jboss.netty</groupId>
+			<artifactId>netty</artifactId>
+			<version>3.2.5.Final</version>
+		</dependency>
+	</dependencies>
+	<build>
+		<finalName>tyt</finalName>
+	</build>
+
+</project>

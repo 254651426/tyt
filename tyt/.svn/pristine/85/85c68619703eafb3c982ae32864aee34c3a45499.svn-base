@@ -1,0 +1,92 @@
+package com.bquan.entity.mysql;
+
+import com.bquan.entity.mysql.BaseStrEntity;
+import java.io.Serializable;
+import java.util.Date;
+
+/**
+ * 用户日志 Entity
+ * @author liuxiaokang
+ * @createTime 2018-06-11
+ */
+public class UseLog extends BaseIntEntity{
+
+	private String userId;//
+	private String userName;//
+	private Date createTime;//
+	private String type;//è¿žæŽ¥ç±»åž‹
+	private String info;//æµè§ˆè®°å½•
+	private String accessAddress;//访问网址
+	private Date accessTime;//访问时间
+	private String realIp;//æºip
+	private String ip;//本机ip地址
+	private String macadress;//网卡地址
+	private String phone;//手机号
+	
+	public String getPhone() {
+		return phone;
+	}
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+	public String getUserId() {  
+        return userId;  
+    }  
+    public void setUserId(String userId) {  
+        this.userId = userId;  
+    }
+	public String getUserName() {  
+        return userName;  
+    }  
+    public void setUserName(String userName) {  
+        this.userName = userName;  
+    }
+	public Date getCreateTime() {  
+        return createTime;  
+    }  
+    public void setCreateTime(Date createTime) {  
+        this.createTime = createTime;  
+    }
+	public String getType() {  
+        return type;  
+    }  
+    public void setType(String type) {  
+        this.type = type;  
+    }
+	public String getInfo() {  
+        return info;  
+    }  
+    public void setInfo(String info) {  
+        this.info = info;  
+    }
+	public String getAccessAddress() {  
+        return accessAddress;  
+    }  
+    public void setAccessAddress(String accessAddress) {  
+        this.accessAddress = accessAddress;  
+    }
+	public Date getAccessTime() {  
+        return accessTime;  
+    }  
+    public void setAccessTime(Date accessTime) {  
+        this.accessTime = accessTime;  
+    }
+	public String getRealIp() {  
+        return realIp;  
+    }  
+    public void setRealIp(String realIp) {  
+        this.realIp = realIp;  
+    }
+	public String getIp() {  
+        return ip;  
+    }  
+    public void setIp(String ip) {  
+        this.ip = ip;  
+    }
+	public String getMacadress() {  
+        return macadress;  
+    }  
+    public void setMacadress(String macadress) {  
+        this.macadress = macadress;  
+    }
+}

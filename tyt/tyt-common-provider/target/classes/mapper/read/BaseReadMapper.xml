@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="baseReadMapper">
+	
+	<sql id="searchSql" >
+	  	where 1=1
+	  	<if test="timeBy!=null">
+	  		<if test="beginDate!=null">
+	  			and ${timeBy} &gt; #{beginDate}
+	  		</if>
+	  		<if test="endDate!=null">
+	  			and ${timeBy} &lt; #{endDate}
+	  		</if>
+	  	</if>
+	  	<if test="valueby!=null">
+	  		<if test="valuemin!=null">
+	  			and ${valueby} &gt; #{valuemin}
+	  		</if>
+	  		<if test="valuemax!=null">
+	  			and ${valueby} &lt; #{valuemax}
+	  		</if>
+	  	</if>
+	  	<if test="searchBy!=null and keyword!=null">
+	  		and ${searchBy} like '%${keyword}%'
+	  	</if>
+	  	<if test="searchByExtra_1!=null  and  valueExtra_1!=null">
+	  		and ${searchByExtra_1} like '%${valueExtra_1}%'
+	  	</if>
+	  	<if test="searchByExtra_2!=null  and  valueExtra_2!=null">
+	  		and ${searchByExtra_2} like '%${valueExtra_2}%'
+	  	</if>
+	  	<if test="searchByExtra_3!=null  and  valueExtra_3!=null">
+	  		and ${searchByExtra_3} like '%${valueExtra_3}%'
+	  	</if>
+	  	<if test="searchByExtra_4!=null  and  valueExtra_4!=null">
+	  		and ${searchByExtra_4} like '%${valueExtra_4}%'
+	  	</if>
+	  	<if test="searchByExtra_5!=null  and  valueExtra_5!=null">
+	  		and ${searchByExtra_5} like '%${valueExtra_5}%'
+	  	</if>
+	  	<if test="searchByExtra_6!=null  and  valueExtra_6!=null">
+	  		and ${searchByExtra_6} like '%${valueExtra_6}%'
+	  	</if>
+	  	<if test="searchByExtra_7!=null  and  valueExtra_7!=null">
+	  		and ${searchByExtra_7} like '%${valueExtra_7}%'
+	  	</if>
+	  	<if test="searchByExtra_8!=null  and  valueExtra_8!=null">
+	  		and ${searchByExtra_8} like '%${valueExtra_8}%'
+	  	</if>
+	  	<if test="searchByExtra_9!=null  and  valueExtra_9!=null">
+	  		and ${searchByExtra_9} like '%${valueExtra_9}%'
+	  	</if>
+	  	<if test="inItem!=null">
+	  		and ${inItem} in 
+	  		<foreach item="item" index="index" collection="inList" 
+                         open="(" separator="," close=")">
+                        #{item}
+            </foreach>
+	  	</if>
+	  	<if test="parentId!=null and adminid!=null">
+	  		and (${parentName} = #{parentId} or ${idName} =#{adminid}) 
+  		</if>
+	  	<if test="extraSql!=null">
+	  		${extraSql}
+	  	</if>
+	</sql>
+  
+	<sql id="orderSql">
+		<if test="orderBy!=null">
+	 		order by ${orderBy} 
+			<if test="orderDesc!=null"> ${orderDesc} </if>
+	 	</if>
+	 	<if test="extraOrderSql!=null">
+	 		${extraOrderSql}
+	 	</if>
+	 	<if test="queryLimitValue!=null">
+	 		limit ${queryLimitValue}
+	 	</if>
+	</sql>
+</mapper>

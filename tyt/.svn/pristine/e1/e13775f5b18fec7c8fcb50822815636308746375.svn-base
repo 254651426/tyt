@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>佣金率</title>
+<#include "header.html" />
+</head>
+<body>
+<div id="commissionRateApp" v-cloak>
+	<div v-show="showList">
+		<div class="grid-btn">
+			<div class="form-group col-sm-2">
+				<select v-model="q.searchBy" class="form-control">
+					<option value="">请选择查询项</option>
+					<option value="username">用户名</option>
+					<option value="write_rate">通过率</option>
+					<option value="show_rate">百分比</option>
+					<option value="limit_send_time">赠送上限</option>
+				</select>
+			</div>
+			<div class="form-group col-sm-2">
+				<input type="text" class="form-control" v-model="q.keyword" @keyup.enter="query" placeholder="请输入查询值">
+			</div>
+			<div class="form-group col-sm-2">
+				<input id="queryTimeTId" class="form-control" type="text" readonly="readonly" maxlength="20" 
+							 onclick="WdatePicker({dateFmt:'yyyy-MM-dd',isShowClear:true});"/>
+			</div>
+			<a class="btn btn-default" @click="query">查询</a>
+			<@shiroPermission role="sys:commissionRate:save" >
+			<a class="btn btn-primary" @click="add"><i class="fa fa-plus"></i>&nbsp;新增</a>
+			</@shiroPermission>
+			
+		</div>
+	    <table class="qrcode-box">
+			<thead>
+				<tr>
+					<th>
+						<input type="checkbox" class="fan-checkbox" v-model="checkAll" @click="checkedAll()">
+					</th>
+			        <th>用户名</th>
+			        <th>通过率</th>
+			        <th>百分比</th>
+			        <th>赠送上限</th>
+			        
+			        <th>总交易额</th>
+			        <th>交易金额</th>
+			        <th>佣金金额</th>
+			        <th>今日佣金</th>
+			        
+					<th style="width:12%;">操作</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr v-for="item in params">
+					<td><input type="checkbox" :value="item.id" class="fan-checkbox" v-model='ischeckdate' /></td>
+			        	<td>{{ item.username }}</td>
+			        	<td>{{ item.writeRate }}</td>
+			        	<td>{{ item.showRate }}</td>
+			        	<td>{{ item.limitSendTime }}</td>
+			        	
+			        	<td>{{ item.realAmount }}</td>
+			        	<td>{{ item.productAmount }}</td>
+			        	<td>{{ item.sendAmount }}</td>
+			        	<td>{{ item.todayAmount }}</td>
+			        	
+					<td>
+		        		<a class="btn btn-primary" href="javascript:void(0)" @click="update(item.id)" >修改</a>
+		        		<a class="btn btn-danger" href="javascript:void(0)" @click="del(item.id)" >删除</a>
+		        	</td>
+				</tr>
+			</tbody>
+		</table>
+	    <uib-pagination :total-items="totalItems" style="padding-left:42% ;float: left;"  v-model="pagination" :max-size="maxSize" :items-per-page="pageSize" class="pagination-sm" :boundary-link-numbers="false" :boundary-links="true" previous-text="上一页" next-text="下一页" first-text="首页" last-text="尾页" :rotate="false" @change="pageChanged" > </uib-pagination>
+	    <div class="page-div" >{{pagination.currentPage}}-{{pagination.numPages}}    共{{totalItems}}条</div>
+    	<select class="page-select" v-model="pageSize"  @change = "pageNum">
+        	<option value="10">10</option> 
+        	<option value="20">20</option>
+        	<option value="30">30</option>
+        </select>
+    </div>
+     
+   	<div v-show="!showList" class="panel panel-default">
+		<div class="panel-heading">{{title}}</div>
+		<form class="form-horizontal">
+			<div class="form-group">
+			   	<div class="col-sm-2 control-label">用户名</div>
+			   	<div class="col-sm-10">
+			      <input type="text" class="form-control" v-model="commissionRate.username" placeholder="username"/>
+			    </div>
+			</div>
+			<div class="form-group">
+			   	<div class="col-sm-2 control-label">通过率</div>
+			   	<div class="col-sm-10">
+			      <input type="text" class="form-control" v-model="commissionRate.writeRate" placeholder="writeRate"/>
+			    </div>
+			</div>
+			<div class="form-group">
+			   	<div class="col-sm-2 control-label">百分比</div>
+			   	<div class="col-sm-10">
+			      <input type="text" class="form-control" v-model="commissionRate.showRate" placeholder="showRate"/>
+			    </div>
+			</div>
+			<div class="form-group">
+			   	<div class="col-sm-2 control-label">赠送上限</div>
+			   	<div class="col-sm-10">
+			      <input type="text" class="form-control" v-model="commissionRate.limitSendTime" placeholder="limitSendTime"/>
+			    </div>
+			</div>
+			<div class="form-group">
+				<div class="col-sm-2 control-label"></div> 
+				<input type="button" class="btn btn-primary" @click="saveOrUpdate" value="确定"/>
+				&nbsp;&nbsp;<input type="button" class="btn btn-warning" @click="reload" value="返回"/>
+			</div>
+		</form>
+	</div>
+</div>
+
+<script src="${rc.contextPath}/js/sys/commissionRate.js?_${.now?long}"></script>
+</body>
+</html>

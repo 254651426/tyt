@@ -1,0 +1,44 @@
+package com.bquan.service.read;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import com.bquan.entity.mysql.User;
+
+public interface UserReadService extends BaseReadService<User>{
+
+	/**
+	 * 通过用户名获取用户信息
+	 * @param username
+	 * @return
+	 */
+	public User getUser(String username);
+	
+	/**
+	 * 查询当前日期新增用户
+	 * @param time
+	 * @return
+	 */
+	public Integer count(String time);
+	
+	/**
+	 * 通过分享码查询用户
+	 * @param shareCode
+	 * @return
+	 */
+	public User getByShareCode(String shareCode);
+	
+	/**
+	 * 统计时间段内的用户
+	 * @param beginDate
+	 * @param endDate
+	 * @return
+	 */
+	public Integer countUser(Date beginDate,Date endDate,boolean isVip);
+	
+	public String getRandomCode();
+	
+	public List<User> selectFmcode(String beginDate,String endDate);
+	
+}

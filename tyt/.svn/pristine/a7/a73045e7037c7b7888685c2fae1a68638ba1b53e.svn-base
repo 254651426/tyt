@@ -1,0 +1,147 @@
+package com.bquan.service.read;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.bquan.bean.UserLineBean;
+import com.bquan.dao.read.UserLineReadMapper;
+import com.bquan.entity.mysql.User;
+import com.bquan.entity.mysql.UserLine;
+import com.bquan.entity.mysql.UserLine.UserLineType;
+import com.bquan.entity.mysql.UserLineP;
+import com.bquan.util.JsonUtil;
+import com.bquan.util.RedisUtil;
+
+/**
+ * 节点线路 Service层读接口实现
+ * @author liuxiaokang
+ * @createTime 2016-08-24
+ */
+public class UserLineReadServiceImpl extends BaseReadServiceImpl<UserLine> implements UserLineReadService{
+
+	@Resource
+	private UserLineReadMapper userLineReadMapper;
+	@Autowired
+	private RedisUtil redisUtil;
+
+	@Override
+	public UserLineReadMapper getBaseReadMapper() {
+		return userLineReadMapper;
+	}
+	
+	/* (non-Javadoc)
+	 * @see com.alibaba.api.base.service.impl.BaseReadServiceImpl#getAllList()
+	 */
+	@Override
+	public List<UserLine> getAllList() {
+		Map<String,Object> map = new HashMap<String,Object>();
+		map.put("status", "1");
+		map.put("orderBy", "userLine.level");
+		map.put("orderDesc", "asc");
+		return super.getTargetList(map);
+	}
+
+	public List<UserLineBean> convertData(List<UserLine> userLineList) {
+		
+		List<UserLineBean> resultList = new ArrayList<UserLineBean>();
+		for(UserLine ul:userLineList){
+			resultList.add(
+					new UserLineBean(
+							ul.getId(), 
+							ul.getUserIp(), 
+							ul.getArea(), 
+							ul.getIsDel(), 
+							ul.getCreateDate(), 
+							ul.getPort(), 
+							ul.getHttp(), 
+							ul.getLevel(), 
+							1, 
+							1, 
+							ul.getComCount(), 
+							ul.getComCountTwo(), 
+							ul.getLineIp(),
+							"0",
+							ul.getPassword()));
+		}
+		return resultList;
+	}
+
+	public List<UserLine> getByType(UserLineType type) {
+		Map<String,Object> map = new HashMap<String,Object>();
+		map.put("orderBy", "level");
+        map.put("orderDesc", "asc");
+        map.put("isFree", "1");
+        map.put("status", "0");
+		return userLineReadMapper.select(map);
+	}
+
+	@Override
+	public List<UserLineBean> getAllLineFromRedis() {
+		if(!redisUtil.exists("allUserLineData") || !redisUtil.exists("realUserLineData")){
+			loadAllDataToRedis();
+		}
+		return (List<UserLineBean>) redisUtil.getoj("allUserLineData");
+	}
+
+	@Override
+	public void loadAllDataToRedis() {
+		Map<String,Object> map = new HashMap<String,Object>();
+        map.put("type", UserLineType.phone);
+        map.put("orderBy", "level");
+        map.put("orderDesc", "asc");
+        map.put("isFree", "1");
+        map.put("status", "0");
+		List<UserLine> allList = userLineReadMapper.select(map);
+		redisUtil.setoj("realUserLineData", allList);
+		redisUtil.setoj("allUserLineData", convertData(allList));
+		map.remove("isFree");
+		List<UserLine> zxList = userLineReadMapper.select(map);
+		redisUtil.setoj("zxUserLineData", convertData(zxList));
+	}
+
+	@Override
+	public List<UserLineBean> getAllLineFromRedis(User user) {
+		if(!redisUtil.exists("allUserLineData")){
+			loadAllDataToRedis();
+		}
+		if(!redisUtil.exists("zxUserLineData")){
+			loadAllDataToRedis();
+		}
+		if(user!=null){
+			if(user.getStatus()==null||user.getStatus()){
+				return (List<UserLineBean>) redisUtil.getoj("allUserLineData");
+			}else{
+				return (List<UserLineBean>) redisUtil.getoj("zxUserLineData");
+			}
+		}else{
+			return (List<UserLineBean>) redisUtil.getoj("allUserLineData");
+		}
+		
+	}
+
+	@Override
+	public  HashMap<String,UserLineP> getAllLine() {
+	  HashMap<String,UserLineP> m = new HashMap<String,UserLineP>();
+	  List<UserLine> pidline = 	userLineReadMapper.queryListParentId(0);
+	  for (UserLine u : pidline) {
+		  UserLineP up = new UserLineP();
+		  up.setArea(u.getArea());
+		  up.setId(u.getId());
+		  List<UserLine> cid = 	userLineReadMapper.queryListParentId(u.getId());
+		  up.setUserLinelist(cid);
+		  m.put(u.getArea(), up);
+	  }
+	  return m;
+	}
+	
+	
+}
+
+
+

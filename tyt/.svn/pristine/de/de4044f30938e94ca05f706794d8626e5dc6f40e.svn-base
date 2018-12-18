@@ -1,0 +1,10 @@
+package com.bquan.dao.read;
+
+/**
+ * 列表设置属性 DAO读接口
+ * @author liuxiaokang
+ * @createTime 2016-08-20
+ */
+public interface WebDomainReadMapper<WebDomain> extends BaseReadMapper<WebDomain>{
+    
+}

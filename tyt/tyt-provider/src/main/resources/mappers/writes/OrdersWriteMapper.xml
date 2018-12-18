@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bquan.dao.write.OrdersWriteMapper" >
+  
+  <delete id="delete" parameterType="com.bquan.entity.mysql.Orders" >
+  	<if test="id!=null">
+	  	delete from 
+			orders
+	    where 
+	    	id = #{id}
+  	</if>
+  </delete>
+  
+  <delete id="deleteBatch">
+	delete from orders where id in 
+	<foreach item="id" collection="array" open="(" separator="," close=")">
+		#{id}
+	</foreach>
+  </delete>
+  
+  <insert id="insert" parameterType="com.bquan.entity.mysql.Orders" >
+		INSERT INTO orders (
+    		id
+            ,product_name
+            ,product_price
+            ,product_sign
+            ,order_id
+            ,user_id
+            ,create_date
+            ,pay_create_date
+            ,pay_date
+            ,order_status
+            ,pre_pay_order_id
+            ,weixin_order_id
+            ,ali_order_id
+            ,user_coupon_id
+            ,count
+            ,modify_date
+            ,is_call_back
+            ,type
+		)
+		VALUES
+		(
+			#{id}
+            ,#{productName}
+            ,#{productPrice}
+            ,#{productSign}
+            ,#{orderId}
+            ,#{userId}
+            ,#{createDate}
+            ,#{payCreateDate}
+            ,#{payDate}
+            ,#{orderStatus}
+            ,#{prePayOrderId}
+            ,#{weixinOrderId}
+            ,#{aliOrderId}
+            ,#{userCouponId}
+            ,#{count}
+            ,#{modifyDate}
+            ,#{isCallBack}
+            ,#{type}
+		)
+	</insert>
+	
+	<update id="update" parameterType="com.bquan.entity.mysql.Orders">
+		UPDATE orders
+		<set>
+			<if test="id!= null">id = #{id}</if>
+            <if test="productName!= null">,product_name = #{productName}</if>
+            <if test="productPrice!= null">,product_price = #{productPrice}</if>
+            <if test="productSign!= null">,product_sign = #{productSign}</if>
+            <if test="orderId!= null">,order_id = #{orderId}</if>
+            <if test="userId!= null">,user_id = #{userId}</if>
+            <if test="createDate!= null">,create_date = #{createDate}</if>
+            <if test="payCreateDate!= null">,pay_create_date = #{payCreateDate}</if>
+            <if test="payDate!= null">,pay_date = #{payDate}</if>
+            <if test="orderStatus!= null">,order_status = #{orderStatus}</if>
+            <if test="prePayOrderId!= null">,pre_pay_order_id = #{prePayOrderId}</if>
+            <if test="weixinOrderId!= null">,weixin_order_id = #{weixinOrderId}</if>
+            <if test="aliOrderId!= null">,ali_order_id = #{aliOrderId}</if>
+            <if test="userCouponId!= null">,user_coupon_id = #{userCouponId}</if>
+            <if test="count!= null">,count = #{count}</if>
+            <if test="modifyDate!= null">,modify_date = #{modifyDate}</if>
+            <if test="isCallBack!= null">,is_call_back = #{isCallBack}</if>
+		</set>
+		WHERE id = #{id}
+	</update>
+	
+</mapper>
+

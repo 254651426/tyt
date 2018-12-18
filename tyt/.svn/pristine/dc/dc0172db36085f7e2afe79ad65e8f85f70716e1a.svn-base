@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bquan.dao.read.LeaveMessageReadMapper" >
+  <resultMap id="BaseResultMap" type="com.bquan.entity.mysql.LeaveMessage" >
+    	<result column="leaveMessage_id" property="id" />
+    	<result column="leaveMessage_info" property="info" />
+    	<result column="leaveMessage_create_time" property="createTime" />
+    	<result column="leaveMessage_user_id" property="userId" />
+    	<result column="leaveMessage_status" property="status" />
+    	<result column="leaveMessage_back_user_id" property="backUserId" />
+    	<result column="leaveMessage_back_info" property="backInfo" />
+    	<result column="leaveMessage_back_time" property="backTime" />
+    	<association resultMap="com.bquan.dao.read.UserReadMapper.BaseResultMap"  property="user"></association>
+    	
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+		leaveMessage.id as leaveMessage_id,
+		leaveMessage.info as leaveMessage_info,
+		leaveMessage.create_time as leaveMessage_create_time,
+		leaveMessage.user_id as leaveMessage_user_id,
+		leaveMessage.status as leaveMessage_status,
+		leaveMessage.back_user_id as leaveMessage_back_user_id,
+		leaveMessage.back_info as leaveMessage_back_info,
+		leaveMessage.back_time as leaveMessage_back_time
+  </sql>
+  
+  <sql id="Base_Where_Sql" >
+  	<if test="id!=null"> and leaveMessage.id = #{id} </if>
+  	<if test="info!=null"> and leaveMessage.info = #{info} </if>
+  	<if test="createTime!=null"> and leaveMessage.create_time = #{createTime} </if>
+  	<if test="userId!=null"> and leaveMessage.user_id = #{userId} </if>
+  	<if test="status!=null"> and leaveMessage.status = #{status} </if>
+  	<if test="backUserId!=null"> and leaveMessage.back_user_id = #{backUserId} </if>
+  	<if test="backInfo!=null"> and leaveMessage.back_info = #{backInfo} </if>
+  	<if test="backTime!=null"> and leaveMessage.back_time = #{backTime} </if>
+  </sql>
+  
+  <select id="select" resultMap="BaseResultMap"  >
+    select 
+    <include refid="Base_Column_List" />,
+    <include refid="com.bquan.dao.read.UserReadMapper.Base_Column_List" />
+    
+    from leave_message leaveMessage 
+    left join user user on leaveMessage.user_id = user.id
+    left join ct_admin admin on leaveMessage.back_user_id=admin.id
+    <include refid="baseReadMapper.searchSql" />
+    <include refid="Base_Where_Sql" />
+    <include refid="baseReadMapper.orderSql" />
+  </select>
+  
+  <select id="count" resultType="Integer"  >
+    select 
+    	count(id)
+    from leave_message leaveMessage
+    <include refid="baseReadMapper.searchSql" />
+    <include refid="Base_Where_Sql" />
+  </select>
+  
+  <select id="sum" resultType="java.math.BigDecimal"  >
+    select 
+    	ifnull(sum(${sumItem}),0)
+    from leave_message leaveMessage
+    <include refid="baseReadMapper.searchSql" />
+    <include refid="Base_Where_Sql" />
+  </select>
+  
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bquan.dao.read.UseLogReadMapper">
+	<resultMap id="BaseResultMap" type="com.bquan.entity.mysql.UseLog">
+		<result column="useLog_id" property="id" />
+		<result column="useLog_user_id" property="userId" />
+		<result column="useLog_user_name" property="userName" />
+		<result column="useLog_create_time" property="createTime" />
+		<result column="useLog_type" property="type" />
+		<result column="useLog_info" property="info" />
+		<result column="useLog_access_address" property="accessAddress" />
+		<result column="useLog_access_time" property="accessTime" />
+		<result column="useLog_real_ip" property="realIp" />
+		<result column="useLog_ip" property="ip" />
+		<result column="useLog_macadress" property="macadress" />
+		<result column="useLog_phone" property="phone" />
+
+	</resultMap>
+
+	<sql id="Base_Column_List">
+		useLog.id as useLog_id,
+		useLog.user_id as
+		useLog_user_id,
+		useLog.user_name as useLog_user_name,
+		useLog.create_time as useLog_create_time,
+		useLog.type as useLog_type,
+		useLog.info as useLog_info,
+		useLog.access_address as
+		useLog_access_address,
+		useLog.access_time as useLog_access_time,
+		useLog.real_ip as useLog_real_ip,
+		useLog.ip as useLog_ip,
+		useLog.macadress as useLog_macadress,
+		useLog.phone as useLog_phone
+	</sql>
+
+	<sql id="Base_Where_Sql">
+		<if test="id!=null"> and useLog.id = #{id} </if>
+		<if test="userId!=null"> and useLog.user_id = #{userId} </if>
+		<if test="userName!=null"> and useLog.user_name = #{userName} </if>
+		<if test="createTime!=null"> and useLog.create_time = #{createTime} </if>
+		<if test="type!=null"> and useLog.type = #{type} </if>
+		<if test="info!=null"> and useLog.info = #{info} </if>
+		<if test="accessAddress!=null"> and useLog.access_address = #{accessAddress} </if>
+		<if test="accessTime!=null"> and useLog.access_time = #{accessTime} </if>
+		<if test="realIp!=null"> and useLog.real_ip = #{realIp} </if>
+		<if test="ip!=null"> and useLog.ip = #{ip} </if>
+		<if test="macadress!=null"> and useLog.macadress = #{macadress} </if>
+		<if test="phone!=null"> and useLog.phone = #{phone} </if>
+
+	</sql>
+
+	<select id="select" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from use_log useLog
+		<include refid="baseReadMapper.searchSql" />
+		<include refid="Base_Where_Sql" />
+		<include refid="baseReadMapper.orderSql" />
+	</select>
+
+	<select id="count" resultType="Integer">
+		select
+		count(id)
+		from use_log useLog
+		<include refid="baseReadMapper.searchSql" />
+		<include refid="Base_Where_Sql" />
+	</select>
+
+	<select id="sum" resultType="java.math.BigDecimal">
+		select
+		ifnull(sum(${sumItem}),0)
+		from use_log useLog
+		<include refid="baseReadMapper.searchSql" />
+		<include refid="Base_Where_Sql" />
+	</select>
+
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

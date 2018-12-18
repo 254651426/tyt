@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" id="viewport" name="viewport">
+<title>绑定商户</title>
+<!-- Bootstrap -->
+<link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+<link href="${rc.contextPath}/wap/css/css.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<form id="validateForm" class="form" action="merchants!bind.action" enctype="multipart/form-data" method="post">
+<div class="container mer-bgcolor">
+  <div class="row logo"><img src="${rc.contextPath}/wap/images/logo.png" alt="..." class="img-circle profile_img"></div>
+  	<div class="col-xs-12">
+  	<input type="text" name="merchants.mobile"  class="form-control form-control-m" placeholder="手机号码" aria-describedby="basic-addon2">
+  	<input type="password" name="merchants.password" class="form-control form-control-m" placeholder="密码" aria-describedby="basic-addon2">
+  	<input type="hidden" name="qrcode.id" value="" placeholder="二维码ID" />
+	<input type="hidden" name="qrcode.number" value="" placeholder="二维码number" />
+  	<input type="submit" value="绑定" class="submit-m" />
+	</div>
+</div>
+<form>
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) --> 
+<script src="${rc.contextPath}/statics/libs/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</body>
+</body>
+</html>
+
+
+

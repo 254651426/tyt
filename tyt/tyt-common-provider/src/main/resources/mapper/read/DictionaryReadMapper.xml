@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bquan.dao.read.DictionaryReadMapper" >
+  <resultMap id="BaseResultMap" type="com.bquan.entity.mysql.Dictionary" >
+    	<result column="dictionary_id" property="id" />
+    	<result column="dictionary_create_date" property="createDate" />
+    	<result column="dictionary_modify_date" property="modifyDate" />
+    	<result column="dictionary_key_text" property="keyText" />
+    	<result column="dictionary_value_text" property="valueText" />
+    	<result column="dictionary_name_text" property="nameText" />
+    	<result column="dictionary_type_text" property="typeText" />
+    	<result column="dictionary_describe_text" property="describeText" />
+    	<result column="dictionary_is_update" property="isUpdate" />
+    	<result column="dictionary_is_file" property="isFile" />
+    	<result column="dictionary_order_list" property="orderList" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+		dictionary.id as dictionary_id,
+		dictionary.create_date as dictionary_create_date,
+		dictionary.modify_date as dictionary_modify_date,
+		dictionary.key_text as dictionary_key_text,
+		dictionary.value_text as dictionary_value_text,
+		dictionary.name_text as dictionary_name_text,
+		dictionary.type_text as dictionary_type_text,
+		dictionary.describe_text as dictionary_describe_text,
+		dictionary.is_update as dictionary_is_update,
+		dictionary.is_file as dictionary_is_file,
+		dictionary.order_list as dictionary_order_list
+  </sql>
+  
+  <sql id="Base_Where_Sql" >
+  	<if test="id!=null"> and dictionary.id = #{id} </if>
+  	<if test="createDate!=null"> and dictionary.create_date = #{createDate} </if>
+  	<if test="modifyDate!=null"> and dictionary.modify_date = #{modifyDate} </if>
+  	<if test="keyText!=null"> and dictionary.key_text = #{keyText} </if>
+  	<if test="valueText!=null"> and dictionary.value_text = #{valueText} </if>
+  	<if test="nameText!=null"> and dictionary.name_text = #{nameText} </if>
+  	<if test="typeText!=null"> and dictionary.type_text = #{typeText} </if>
+  	<if test="describeText!=null"> and dictionary.describe_text = #{describeText} </if>
+  	<if test="isUpdate!=null"> and dictionary.is_update = #{isUpdate} </if>
+  	<if test="isFile!=null"> and dictionary.is_file = #{isFile} </if>
+  	<if test="orderList!=null"> and dictionary.order_list = #{orderList} </if>
+  </sql>
+  
+  <select id="select" resultMap="BaseResultMap"  >
+    select 
+    <include refid="Base_Column_List" />
+    from ct_dictionary dictionary
+    <include refid="baseReadMapper.searchSql" />
+    <include refid="Base_Where_Sql" />
+    <include refid="baseReadMapper.orderSql" />
+  </select>
+  
+  <select id="count" resultType="Integer"  >
+    select 
+    	count(id)
+    from ct_dictionary dictionary
+    <include refid="baseReadMapper.searchSql" />
+    <include refid="Base_Where_Sql" />
+  </select>
+  
+  <select id="sum" resultType="java.math.BigDecimal"  >
+    select 
+    	ifnull(sum(${sumItem}),0) 
+    from ct_dictionary dictionary
+    <include refid="baseReadMapper.searchSql" />
+    <include refid="Base_Where_Sql" />
+  </select>
+  
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

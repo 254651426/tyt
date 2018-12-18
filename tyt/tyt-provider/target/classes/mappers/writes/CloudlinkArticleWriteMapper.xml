@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bquan.dao.write.CloudlinkArticleWriteMapper" >
+  
+  <delete id="delete" parameterType="com.bquan.entity.mysql.CloudlinkArticle" >
+  	<if test="id!=null">
+	  	delete from 
+			ct_cloudlink_article
+	    where 
+	    	id = #{id}
+  	</if>
+  </delete>
+  
+  <insert id="insert" parameterType="com.bquan.entity.mysql.CloudlinkArticle" >
+		INSERT INTO ct_cloudlink_article (
+    		id
+            ,create_date
+            ,modify_date
+            ,content
+            ,from_text
+            ,hits
+            ,like_hits
+            ,order_list
+            ,title
+            ,logo_url
+            ,status
+            ,is_today_hot
+            ,logo_url1
+            ,logo_url2
+		)
+		VALUES
+		(
+			#{id}
+            ,#{createDate}
+            ,#{modifyDate}
+            ,#{content}
+            ,#{fromText}
+            ,#{hits}
+            ,#{likeHits}
+            ,#{orderList}
+            ,#{title}
+            ,#{logoUrl}
+            ,#{status}
+            ,#{isTodayHot}
+            ,#{logoUrl1}
+            ,#{logoUrl2}
+		)
+	</insert>
+	
+	<update id="update" parameterType="com.bquan.entity.mysql.CloudlinkArticle">
+		UPDATE ct_cloudlink_article
+		<set>
+			<if test="id!= null">id = #{id}</if>
+            <if test="createDate!= null">,create_date = #{createDate}</if>
+            <if test="modifyDate!= null">,modify_date = #{modifyDate}</if>
+            <if test="content!= null">,content = #{content}</if>
+            <if test="fromText!= null">,from_text = #{fromText}</if>
+            <if test="hits!= null">,hits = #{hits}</if>
+            <if test="likeHits!= null">,like_hits = #{likeHits}</if>
+            <if test="orderList!= null">,order_list = #{orderList}</if>
+            <if test="title!= null">,title = #{title}</if>
+            <if test="logoUrl!= null">,logo_url = #{logoUrl}</if>
+            <if test="status!= null">,status = #{status}</if>
+            <if test="isTodayHot!= null">,is_today_hot = #{isTodayHot}</if>
+            <if test="logoUrl1!= null">,logo_url1 = #{logoUrl1}</if>
+            <if test="logoUrl2!= null">,logo_url2 = #{logoUrl2}</if>
+		</set>
+		WHERE id = #{id}
+	</update>
+	
+</mapper>
+

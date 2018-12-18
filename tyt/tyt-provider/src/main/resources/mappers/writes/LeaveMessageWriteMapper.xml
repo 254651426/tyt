@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bquan.dao.write.LeaveMessageWriteMapper" >
+  
+  <delete id="delete" parameterType="com.bquan.entity.mysql.LeaveMessage" >
+  	<if test="id!=null">
+	  	delete from 
+			leave_message
+	    where 
+	    	id = #{id}
+  	</if>
+  </delete>
+  
+  <delete id="deleteBatch">
+	delete from leave_message where id in 
+	<foreach item="id" collection="array" open="(" separator="," close=")">
+		#{id}
+	</foreach>
+  </delete>
+  
+  <insert id="insert" parameterType="com.bquan.entity.mysql.LeaveMessage" >
+		INSERT INTO leave_message (
+    		id
+            ,info
+            ,create_time
+            ,user_id
+            ,status
+            ,back_user_id
+            ,back_info
+            ,back_time
+		)
+		VALUES
+		(
+			#{id}
+            ,#{info}
+            ,#{createTime}
+            ,#{userId}
+            ,#{status}
+            ,#{backUserId}
+            ,#{backInfo}
+            ,#{backTime}
+		)
+	</insert>
+	
+	<update id="update" parameterType="com.bquan.entity.mysql.LeaveMessage">
+		UPDATE leave_message
+		<set>
+			<if test="id!= null">id = #{id}</if>
+            <if test="info!= null">,info = #{info}</if>
+            <if test="createTime!= null">,create_time = #{createTime}</if>
+            <if test="userId!= null">,user_id = #{userId}</if>
+            <if test="status!= null">,status = #{status}</if>
+            <if test="backUserId!= null">,back_user_id = #{backUserId}</if>
+            <if test="backInfo!= null">,back_info = #{backInfo}</if>
+            <if test="backTime!= null">,back_time = #{backTime}</if>
+		</set>
+		WHERE id = #{id}
+	</update>
+	
+</mapper>
+

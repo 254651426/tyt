@@ -1,0 +1,250 @@
+package com.bquan.controller.sys;
+
+import com.bquan.annotation.SysLog;
+import com.bquan.bean.Pager;
+import com.bquan.entity.mysql.User;
+import com.bquan.service.read.UserReadService;
+import com.bquan.service.write.UserWriteService;
+import com.bquan.util.*;
+import com.bquan.validator.group.AddGroup;
+import com.bquan.validator.group.UpdateGroup;
+import com.bquan.validator.Assert;
+import com.bquan.validator.ValidatorUtils;
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.apache.shiro.crypto.hash.Sha256Hash;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+/**
+ * 影盾用户
+ * 
+ * @author liuxiaokang
+ * @createTime 2017-06-24
+ */
+@RestController
+@RequestMapping("/sys/tytUser")
+public class SysTytUserController extends AbstractController {
+
+	@Autowired
+	private UserReadService tytUserReadService;
+	@Autowired
+	private UserWriteService tytUserWriteService;
+
+	/**
+	 * 所有用户列表
+	 */
+	@SysLog("查看影盾用户")
+	@RequestMapping("/list")
+	@RequiresPermissions("sys:tytUser:list")
+	public R list(@RequestParam Map<String, Object> params) {
+		try {
+			params.put("orderBy", "create_date");
+			params.put("order", "desc");
+			return R.ok().put("page", tytUserReadService.findPager(new Pager(params)));
+		} catch (Exception e) {
+			e.printStackTrace();
+			return R.error("查询异常");
+		}
+	}
+
+	/**
+	 * 查看
+	 */
+	@RequestMapping("/info/{id}")
+	@RequiresPermissions("sys:tytUser:info")
+	public R info(@PathVariable("id") String id) {
+		User user = tytUserReadService.get(id);
+		return R.ok().put("tytUser", user);
+	}
+
+	@RequestMapping("/staticuser")
+	@ResponseBody
+	public Map<String, Object> staticuser() {
+
+		List<String> dateList = new ArrayList<String>();
+		List<Integer> dataList = new ArrayList<Integer>();
+		List<Integer> vipList = new ArrayList<Integer>();
+
+		SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
+		// 计算明天的日期
+		Calendar now = Calendar.getInstance();
+		now.set(Calendar.DAY_OF_MONTH, now.get(Calendar.DAY_OF_MONTH) + 1);
+		// 14天前的日期
+		Calendar calendar = Calendar.getInstance();
+		calendar.set(Calendar.DAY_OF_MONTH, calendar.get(Calendar.DAY_OF_MONTH) - 14);
+		while (!sf.format(calendar.getTime()).equals(sf.format(now.getTime()))) {
+			dateList.add(sf.format(calendar.getTime()));
+			// Map<String,Object> map=new HashMap<String,Object>();
+			// map.put("timeBy", "user.create_date");
+			// calendar.set(
+			// calendar.get(Calendar.YEAR),
+			// calendar.get(Calendar.MONTH),
+			// calendar.get(Calendar.DAY_OF_MONTH), 0, 0, 0);
+			// map.put("beginDate", calendar.getTime());
+			// calendar.set(
+			// calendar.get(Calendar.YEAR),
+			// calendar.get(Calendar.MONTH),
+			// calendar.get(Calendar.DAY_OF_MONTH), 23, 59, 59);
+			// map.put("endDate", calendar.getTime());
+			dataList.add(tytUserReadService.countUser(calendar.getTime(), calendar.getTime(), false));
+			vipList.add(tytUserReadService.countUser(calendar.getTime(), calendar.getTime(), true));
+			calendar.set(Calendar.DAY_OF_MONTH, calendar.get(Calendar.DAY_OF_MONTH) + 1);
+		}
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("dateList", dateList);
+		map.put("dataList", dataList);
+		map.put("vipList", vipList);
+
+		return map;
+	}
+
+	/**
+	 * 保存
+	 */
+	@SysLog("保存影盾用户")
+	@RequestMapping("/save")
+	@RequiresPermissions("sys:tytUser:save")
+	public R save(@RequestBody User user) {
+		// ValidatorUtils.validateEntity(user, AddGroup.class);
+		String password = user.getPassword();
+		User u = tytUserReadService.get(user.getId());
+		if (StringUtils.isNotEmpty(password)) {
+			password = MD5Util.MD5Encode(MD5Util.MD5Encode(password, "utf-8"), "utf-8");
+			u.setPassword(password);
+		}
+		u.setStatus(user.getStatus());
+		tytUserWriteService.update(u);
+		return R.ok();
+	}
+
+	/**
+	 * 保存
+	 */
+	@SysLog("保存新增影盾用户")
+	@RequestMapping("/saveadd")
+	public R saveadd(@RequestBody User user, HttpServletRequest request,HttpServletResponse response,HttpSession httpSession) {
+		// ValidatorUtils.validateEntity(user, AddGroup.class);
+		String password = user.getPassword();
+		// 查询用户
+		User u = tytUserReadService.getUser(user.getUsername());
+		if (u != null) {
+			return R.error(-1, "该账户已被注册！");
+		}
+		String fmcode = httpSession.getAttribute("fmcode") == null ? "" : httpSession.getAttribute("fmcode").toString();
+
+		// 生成分享码
+		String share_code = tytUserReadService.getRandomCode();
+
+		Calendar cal = Calendar.getInstance();
+		/**
+		 * 保存用户
+		 */
+		User usr = new User();
+		usr.setShareCode(share_code);
+		usr.setUsername(user.getUsername());
+		usr.setPassword(MD5Util.MD5(MD5Util.MD5(password)));
+		usr.setDepname(user.getDepname());
+		usr.setStatus(true);
+		usr.setIsBlack(true);
+		usr.setCreateDate(new Date());
+		usr.setUserSource(true);
+		usr.setLevel("5");// 设置等级为普通用户
+		usr.setLeftCount(0);
+		cal.set(Calendar.DAY_OF_MONTH, cal.get(Calendar.DAY_OF_MONTH) +Integer.parseInt(user.getDaynum()));
+		usr.setVipEndTime(cal.getTime());
+		usr.setSendDate(null);
+		usr.setIsVipSend(false); // 标记佣金未赠送
+		usr.setIsRegisterSend(false); // 此字段暂时无任何意义
+		usr.setFmcode(fmcode); // 邀请码，购买vip后，会给此用户赠送佣金
+		usr.setIp(getIp(request));
+		usr.setLoginDate(new Date());
+		usr.setVersion("");
+		// 赠送10分钟（false代表未赠送120分钟，首次登陆的时候会赠送）
+		usr.setIsEmailSend(true);
+		usr.setSendDate(cal.getTime());
+		tytUserWriteService.insert(usr);
+		return R.ok();
+	}
+
+	/**
+	 * 获取IP
+	 * 
+	 * @param request
+	 * @return
+	 */
+	public String getIp(HttpServletRequest request) {
+		if (StringUtils.isNotEmpty(request.getHeader("x-forwarded-for"))) {
+			return request.getHeader("x-forwarded-for");
+		}
+		if (StringUtils.isNotEmpty(request.getRemoteAddr())) {
+			return request.getRemoteAddr();
+		}
+		return "获取IP失败";
+	}
+
+	/**
+	 * 修改
+	 */
+	@SysLog("修改影盾用户")
+	@RequestMapping("/update")
+	@RequiresPermissions("sys:tytUser:update")
+	public R update(@RequestBody User user) {
+		// ValidatorUtils.validateEntity(user, UpdateGroup.class);
+		String id = user.getId();
+		User persistent = tytUserReadService.get(id);
+		BeanUtils.copyProperties(user, persistent, new String[] { "id", "createDate", "modifyDate" });
+		tytUserWriteService.update(persistent);
+		return R.ok();
+	}
+
+	/**
+	 * 删除
+	 */
+	@SysLog("删除影盾用户")
+	@RequestMapping("/delete")
+	@RequiresPermissions("sys:tytUser:delete")
+	public R delete(String id) {
+		tytUserWriteService.delete(id);
+		return R.ok();
+	}
+
+	@SysLog("修改影盾用户时间")
+	@RequestMapping("/changeUser")
+	@RequiresPermissions("sys:tytUser:changeUser")
+	public R changeUser(String userId, String userDay, String userLevel) {
+		System.out.println(userId);
+		System.out.println(userDay);
+		System.out.println(userLevel);
+		try {
+			User u = tytUserReadService.get(userId);
+			int day = Integer.parseInt(userDay);
+			int level = Integer.parseInt(userLevel);
+			if (u != null) {
+				u.setLevel(String.valueOf(level));
+				Calendar c = Calendar.getInstance();
+				c.set(Calendar.DAY_OF_MONTH, c.get(Calendar.DAY_OF_MONTH) + day);
+				u.setVipEndTime(c.getTime());
+				tytUserWriteService.update(u);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return R.error();
+		}
+		return R.ok();
+	}
+}

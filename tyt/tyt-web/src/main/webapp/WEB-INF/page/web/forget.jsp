@@ -1,0 +1,96 @@
+<!doctype html>
+<%@ page contentType="text/html;charset=UTF-8" %>
+<html>
+<head>
+<meta charset="utf-8">
+<%@ include file="/WEB-INF/page/web/include/head.jsp"%>
+<title>影盾</title>
+<script type="text/javascript">
+$(function(){ 
+	
+	var msg = '${msg}';
+	if(msg!=''){
+		alert(msg);
+	}
+	
+	$("#getCodeId").click(function(){
+		var username = $("#usernameId").val();
+		if(username==null||username==''){
+			alert("账号不能为空");
+			return;
+		}
+		$.ajax({
+		    url:'${rc.contextPath}/web/user/getCode',
+		    type:'POST', //GET
+		    async:true,    //或false,是否异步
+		    data:{
+		        "username":username,"type":'1'
+		    },
+		    timeout:5000,    //超时时间
+		    dataType:'json',    //返回的数据格式：json/xml/html/script/jsonp/text
+		    beforeSend:function(xhr){
+		        console.log(xhr)
+		        console.log('发送前')
+		    },
+		    success:function(data,textStatus,jqXHR){
+		        if(data.status=='success'){
+		        	alert(data.msg);
+		        	var count = 120;
+	                var countdown = setInterval(CountDown, 1000);
+	                // 设置按钮倒计时函数
+	                function CountDown() {
+	                  $("#getCodeId").html(count);
+	                  $("#getCodeId").css("pointer-events","none");
+	                  // 设置按钮为不可点击
+	                  if (count == 0) {
+	                    // 倒计时结束后，设置按钮为可点击
+	                    clickFlag = true;
+	                    $("#getCodeId").removeAttr("style");
+	                    $("#getCodeId").html("验证码");
+	                    clearInterval(countdown);
+	                  }
+	                  count--;
+	                }
+		        }else{
+		        	alert(data.msg);
+		        }
+		    },
+		    error:function(xhr,textStatus){
+		        console.log('错误')
+		        console.log(xhr)
+		        console.log(textStatus)
+		    },
+		    complete:function(){
+		        console.log('结束')
+		    }
+		})
+	})
+	
+	$(".reg-button").click(function(){
+		$("#formId").submit();
+	})
+});
+</script>
+</head>
+
+<body>
+<%@ include file="/WEB-INF/page/web/include/tab.jsp"%>
+
+<form id="formId" action="${rc.contextPath}/web/user/changepassword" method="post" >
+<div class="verticalCenter logoinbox">
+  	<div class="logoin-title"><h2>修改密码</h2></div>
+  	<ul>
+	    <li><input type="text" id="usernameId" name="username" placeholder="邮箱" style="width:296px;"></li>
+	    <li class="ide-code"><input type="text" name="code" placeholder="请输入验证码"><p id="getCodeId">验证码</p></li>
+	    <li><input type="password" id="passId" name="password" placeholder="设置密码" style="width:296px;"></li>
+	    <li><input type="password" id="rePassId" name="repassword" placeholder="确认密码" style="width:296px;"></li>
+	    <li class="reg-button"><img title="影盾官网，影盾，影盾软件,影盾插件,影盾加速器，影盾浏览器插件，影盾chrome浏览器插件,代理,windows代理，mac代理，代理软件,时光隧道,蓝灯(Lartrn),Green加速器,壁虎漫步,出锅。加速器插件,加速器，科学上网,Chrome插件，浏览器插件，chrome浏览器插件,科学上网,科学上网插件,加速器软件,访问Google、访问Facebook、访问YouTube,访问Twitter。" src="${rc.contextPath}/statics/web/images/affirm.png"></li>
+   	</ul>
+</div>
+</form>
+
+<!--版权-->
+<%@ include file="/WEB-INF/page/web/include/footer2.jsp"%>
+</div>
+</body>
+</html>

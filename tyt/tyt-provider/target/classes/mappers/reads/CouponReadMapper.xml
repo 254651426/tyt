@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bquan.dao.read.CouponReadMapper">
+	
+	<sql id="Base_Coupon_Column_List">
+		coupon.id as coupon_id,
+		coupon.sign as coupon_sign,
+		coupon.name as coupon_name,
+		coupon.price as coupon_price,
+		coupon.day as coupon_day,
+		coupon.create_date as coupon_create_date,
+		coupon.modify_date as coupon_modify_date,
+		coupon.is_expired as coupon_is_expired,
+		coupon.minimum as coupon_minimum,
+		coupon.img_url as coupon_img_url
+	</sql>
+	
+	<resultMap type="com.bquan.entity.mysql.Coupon" id="couponMap">
+		<id column="coupon_id" property="id"/>
+		<result column="coupon_sign" property="sign" />
+		<result column="coupon_name" property="name" />
+		<result column="coupon_price" property="price" />
+		<result column="coupon_day" property="day" />
+		<result column="coupon_create_date" property="createDate" />
+		<result column="coupon_modify_date" property="modifyDate" />
+		<result column="coupon_is_expired" property="isExpired" />
+		<result column="coupon_minimum" property="minimum" />
+		<result column="coupon_img_url" property="imgUrl" />
+	</resultMap>
+	
+    <select id="select" resultMap="couponMap">
+     	select 
+     		<include refid="Base_Coupon_Column_List" />
+     	from 
+     		ct_coupon as coupon 
+     	where
+     		1=1
+     		<if test="sign!=null">
+     			and sign=#{sign}
+     		</if>
+    </select>
+	
+</mapper>

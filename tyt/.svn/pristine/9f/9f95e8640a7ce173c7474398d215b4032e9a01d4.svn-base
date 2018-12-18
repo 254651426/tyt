@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bquan.dao.read.UserTokenReadMapper" >
+  <resultMap id="BaseResultMap" type="com.bquan.entity.mysql.UserToken" >
+    	<result column="userToken_id" property="id" />
+    	<result column="userToken_username" property="username" />
+    	<result column="userToken_token" property="token" />
+    	<result column="userToken_create_date" property="createDate" />
+    	<result column="userToken_modify_date" property="modifyDate" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+		userToken.id as userToken_id,
+		userToken.username as userToken_username,
+		userToken.token as userToken_token,
+		userToken.create_date as userToken_create_date,
+		userToken.modify_date as userToken_modify_date
+  </sql>
+  
+  <sql id="Base_Where_Sql" >
+  	<if test="id!=null"> and userToken.id = #{id} </if>
+  	<if test="username!=null"> and userToken.username = #{username} </if>
+  	<if test="token!=null"> and userToken.token = #{token} </if>
+  	<if test="createDate!=null"> and userToken.create_date = #{createDate} </if>
+  	<if test="modifyDate!=null"> and userToken.modify_date = #{modifyDate} </if>
+  </sql>
+  
+  <select id="select" resultMap="BaseResultMap"  >
+    select 
+    <include refid="Base_Column_List" />
+    from user_token userToken
+    <include refid="baseReadMapper.searchSql" />
+    <include refid="Base_Where_Sql" />
+    <include refid="baseReadMapper.orderSql" />
+  </select>
+  
+  <select id="count" resultType="Integer"  >
+    select 
+    	count(id)
+    from user_token userToken
+    <include refid="baseReadMapper.searchSql" />
+    <include refid="Base_Where_Sql" />
+  </select>
+  
+  <select id="sum" resultType="java.math.BigDecimal"  >
+    select 
+    	ifnull(sum(${sumItem}),0)
+    from user_token userToken
+    <include refid="baseReadMapper.searchSql" />
+    <include refid="Base_Where_Sql" />
+  </select>
+  
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

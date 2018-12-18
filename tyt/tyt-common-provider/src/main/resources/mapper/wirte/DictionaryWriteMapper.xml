@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bquan.dao.write.DictionaryWriteMapper" >
+  
+  <delete id="delete" parameterType="com.bquan.entity.mysql.Dictionary" >
+  	<if test="id!=null">
+	  	delete from 
+			ct_dictionary
+	    where 
+	    	id = #{id}
+  	</if>
+  </delete>
+  
+  <delete id="deleteBatch">
+	delete from ct_dictionary where id in 
+	<foreach item="id" collection="array" open="(" separator="," close=")">
+		#{id}
+	</foreach>
+  </delete>
+  
+  <insert id="insert" parameterType="com.bquan.entity.mysql.Dictionary" >
+		INSERT INTO ct_dictionary (
+    		id
+            ,create_date
+            ,modify_date
+            ,key_text
+            ,value_text
+            ,name_text
+            ,type_text
+            ,describe_text
+            ,is_update
+            ,is_file
+            ,order_list
+		)
+		VALUES
+		(
+			#{id}
+            ,#{createDate}
+            ,#{modifyDate}
+            ,#{keyText}
+            ,#{valueText}
+            ,#{nameText}
+            ,#{typeText}
+            ,#{describeText}
+            ,#{isUpdate}
+            ,#{isFile}
+            ,#{orderList}
+		)
+	</insert>
+	
+	<update id="update" parameterType="com.bquan.entity.mysql.Dictionary">
+		UPDATE ct_dictionary
+		<set>
+			<if test="id!= null">id = #{id}</if>
+            <if test="createDate!= null">,create_date = #{createDate}</if>
+            <if test="modifyDate!= null">,modify_date = #{modifyDate}</if>
+            <if test="keyText!= null">,key_text = #{keyText}</if>
+            <if test="valueText!= null">,value_text = #{valueText}</if>
+            <if test="nameText!= null">,name_text = #{nameText}</if>
+            <if test="typeText!= null">,type_text = #{typeText}</if>
+            <if test="describeText!= null">,describe_text = #{describeText}</if>
+            <if test="isUpdate!= null">,is_update = #{isUpdate}</if>
+            <if test="isFile!= null">,is_file = #{isFile}</if>
+            <if test="orderList!= null">,order_list = #{orderList}</if>
+		</set>
+		WHERE id = #{id}
+	</update>
+	
+	<update id="updateFlag">
+		update ct_dictionary set is_update = 0 
+	</update>
+	
+</mapper>
+

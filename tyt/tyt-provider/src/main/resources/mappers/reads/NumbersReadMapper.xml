@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bquan.dao.read.NumbersReadMapper" >
+  <resultMap id="BaseResultMap" type="com.bquan.entity.mysql.Numbers" >
+    	<result column="numbers_id" property="id" />
+    	<result column="numbers_number" property="number" />
+    	<result column="numbers_isuser" property="isuser" />
+    	<result column="numbers_create_date" property="createDate" />
+    	<result column="numbers_modify_date" property="modifyDate" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+		numbers.id as numbers_id,
+		numbers.number as numbers_number,
+		numbers.isuser as numbers_isuser,
+		numbers.create_date as numbers_create_date,
+		numbers.modify_date as numbers_modify_date
+  </sql>
+  
+  <sql id="Base_Where_Sql" >
+  	<if test="id!=null"> and numbers.id = #{id} </if>
+  	<if test="number!=null"> and numbers.number = #{number} </if>
+  	<if test="isuser!=null"> and numbers.isuser = #{isuser} </if>
+  	<if test="createDate!=null"> and numbers.create_date = #{createDate} </if>
+  	<if test="modifyDate!=null"> and numbers.modify_date = #{modifyDate} </if>
+  </sql>
+  
+  <select id="select" resultMap="BaseResultMap"  >
+    select 
+    <include refid="Base_Column_List" />
+    from ct_numbers numbers
+    <include refid="baseReadMapper.searchSql" />
+    <include refid="Base_Where_Sql" />
+    <include refid="baseReadMapper.orderSql" />
+  </select>
+  
+  <select id="count" resultType="Integer"  >
+    select 
+    	count(id)
+    from ct_numbers numbers
+    <include refid="baseReadMapper.searchSql" />
+    <include refid="Base_Where_Sql" />
+  </select>
+  
+  <select id="sum" resultType="java.math.BigDecimal"  >
+    select 
+    	ifnull(sum(${sumItem}),0) 
+    from ct_numbers numbers
+    <include refid="baseReadMapper.searchSql" />
+    <include refid="Base_Where_Sql" />
+  </select>
+  
+  <select id="getOne" resultMap ="BaseResultMap">
+  	select
+  	
+  	<include refid="Base_Column_List" />
+  	from ct_numbers `numbers`
+  	<include refid="baseReadMapper.searchSql" />
+    <include refid="Base_Where_Sql" />
+    <include refid="baseReadMapper.orderSql" />
+  	limit 0,1
+  </select>
+  
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

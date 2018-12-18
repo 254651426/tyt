@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>订单</title>
+<#include "header.html" />
+</head>
+<body>
+<div id="ordersApp" v-cloak>
+	<div v-show="showList">
+		<div class="grid-btn">
+			<div class="form-group col-sm-2">
+				<select v-model="q.searchBy" class="form-control">
+					<option value="">请选择查询项</option>
+					<option value="product_name">产品名称</option>
+					<option value="order_id">订单号</option>
+					<option value="user_id">用户名称</option>
+					<option value="order_status">订单状态</option>
+					<option value="weixin_order_id">微信订单号</option>
+					<option value="ali_order_id">支付宝订单号</option>
+				</select>
+			</div>
+			<div class="form-group col-sm-2">
+				<input type="text" class="form-control" v-model="q.keyword" @keyup.enter="query" placeholder="请输入查询值">
+			</div>
+			<a class="btn btn-default" @click="query">查询</a>
+		</div>
+	    <table class="qrcode-box">
+			<thead>
+				<tr>
+					<th>
+						<input type="checkbox" class="fan-checkbox" v-model="checkAll" @click="checkedAll()">
+					</th>
+			        <th>产品名称</th>
+		        	<th>产品价格</th>
+		        	<th>订单号</th>
+		        	<th>用户id</th>
+		        	<th>创建时间</th>
+		        	<th>支付时间</th>
+		        	<th>订单状态</th>
+		        	<th>微信订单号</th>
+		        	<th>支付宝订单号</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr v-for="item in params">
+					<td><input type="checkbox" :value="item.id" class="fan-checkbox" v-model='ischeckdate' /></td>
+			        	<td>{{ item.productName }}</td>
+			        	<td>{{ item.productPrice }}</td>
+			        	<td style="width:10px;">{{ item.orderId }}</td>
+			        	<td>{{ item.userId }}</td>
+			        	<td>{{ item.createDate | time}}</td>
+			        	<td>{{ item.payDate | time }}</td>
+			        	<td>{{ item.orderStatus }}</td>
+			        	<td>{{ item.weixinOrderId }}</td>
+			        	<td>{{ item.aliOrderId }}</td>
+				</tr>
+			</tbody>
+		</table>
+	    <uib-pagination :total-items="totalItems" style="padding-left:42% ;float: left;"  v-model="pagination" :max-size="maxSize" :items-per-page="pageSize" class="pagination-sm" :boundary-link-numbers="false" :boundary-links="true" previous-text="上一页" next-text="下一页" first-text="首页" last-text="尾页" :rotate="false" @change="pageChanged" > </uib-pagination>
+	    <div class="page-div" >{{pagination.currentPage}}-{{pagination.numPages}}    共{{totalItems}}条</div>
+    	<select class="page-select" v-model="pageSize"  @change = "pageNum">
+        	<option value="10">10</option> 
+        	<option value="20">20</option>
+        	<option value="30">30</option>
+        </select>
+    </div>
+     
+   	<div v-show="!showList" class="panel panel-default">
+		<div class="panel-heading">{{title}}</div>
+		<form class="form-horizontal">
+			<div class="form-group">
+			   	<div class="col-sm-2 control-label"></div>
+			   	<div class="col-sm-10">
+			      <input type="text" class="form-control" v-model="orders.productName" placeholder="productName"/>
+			    </div>
+			</div>
+			<div class="form-group">
+			   	<div class="col-sm-2 control-label"></div>
+			   	<div class="col-sm-10">
+			      <input type="text" class="form-control" v-model="orders.productPrice" placeholder="productPrice"/>
+			    </div>
+			</div>
+			<div class="form-group">
+			   	<div class="col-sm-2 control-label"></div>
+			   	<div class="col-sm-10">
+			      <input type="text" class="form-control" v-model="orders.productSign" placeholder="productSign"/>
+			    </div>
+			</div>
+			<div class="form-group">
+			   	<div class="col-sm-2 control-label"></div>
+			   	<div class="col-sm-10">
+			      <input type="text" class="form-control" v-model="orders.orderId" placeholder="orderId"/>
+			    </div>
+			</div>
+			<div class="form-group">
+			   	<div class="col-sm-2 control-label"></div>
+			   	<div class="col-sm-10">
+			      <input type="text" class="form-control" v-model="orders.userId" placeholder="userId"/>
+			    </div>
+			</div>
+			<div class="form-group">
+			   	<div class="col-sm-2 control-label"></div>
+			   	<div class="col-sm-10">
+			      <input type="text" class="form-control" v-model="orders.payCreateDate" placeholder="payCreateDate"/>
+			    </div>
+			</div>
+			<div class="form-group">
+			   	<div class="col-sm-2 control-label"></div>
+			   	<div class="col-sm-10">
+			      <input type="text" class="form-control" v-model="orders.payDate" placeholder="payDate"/>
+			    </div>
+			</div>
+			<div class="form-group">
+			   	<div class="col-sm-2 control-label"></div>
+			   	<div class="col-sm-10">
+			      <input type="text" class="form-control" v-model="orders.orderStatus" placeholder="orderStatus"/>
+			    </div>
+			</div>
+			<div class="form-group">
+			   	<div class="col-sm-2 control-label"></div>
+			   	<div class="col-sm-10">
+			      <input type="text" class="form-control" v-model="orders.prePayOrderId" placeholder="prePayOrderId"/>
+			    </div>
+			</div>
+			<div class="form-group">
+			   	<div class="col-sm-2 control-label"></div>
+			   	<div class="col-sm-10">
+			      <input type="text" class="form-control" v-model="orders.weixinOrderId" placeholder="weixinOrderId"/>
+			    </div>
+			</div>
+			<div class="form-group">
+			   	<div class="col-sm-2 control-label"></div>
+			   	<div class="col-sm-10">
+			      <input type="text" class="form-control" v-model="orders.aliOrderId" placeholder="aliOrderId"/>
+			    </div>
+			</div>
+			<div class="form-group">
+			   	<div class="col-sm-2 control-label"></div>
+			   	<div class="col-sm-10">
+			      <input type="text" class="form-control" v-model="orders.userCouponId" placeholder="userCouponId"/>
+			    </div>
+			</div>
+			<div class="form-group">
+			   	<div class="col-sm-2 control-label"></div>
+			   	<div class="col-sm-10">
+			      <input type="text" class="form-control" v-model="orders.count" placeholder="count"/>
+			    </div>
+			</div>
+			<div class="form-group">
+				<div class="col-sm-2 control-label">是否回调了</div> 
+				<label class="radio-inline">
+				  <input type="radio" name="status" value="true" v-model="orders.isCallBack"/> 是
+				</label>
+				<label class="radio-inline">
+				  <input type="radio" name="status" value="false" v-model="orders.isCallBack"/> 否
+				</label>
+			</div>
+			<div class="form-group">
+				<div class="col-sm-2 control-label"></div> 
+				<input type="button" class="btn btn-primary" @click="saveOrUpdate" value="确定"/>
+				&nbsp;&nbsp;<input type="button" class="btn btn-warning" @click="reload" value="返回"/>
+			</div>
+		</form>
+	</div>
+</div>
+
+<script src="${rc.contextPath}/js/sys/orders.js?_${.now?long}"></script>
+</body>
+</html>

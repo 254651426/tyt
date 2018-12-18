@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bquan.dao.read.UserCouponReadMapper">
+	
+	<sql id="Base_UserCoupon_Column_List">
+		userCoupon.id as userCoupon_id,
+		userCoupon.create_date as userCoupon_create_date,
+		userCoupon.modify_date as userCoupon_modify_date,
+		userCoupon.user_id as userCoupon_user_id,
+		userCoupon.coupon_id as userCoupon_coupon_id,
+		userCoupon.limit_date as userCoupon_limit_date,
+		userCoupon.status as userCoupon_status ,
+		userCoupon.price as userCoupon_price,
+		userCoupon.use_date as userCoupon_use_date,
+		userCoupon.orders_id as userCoupon_orders_id,
+		userCoupon.minimum as userCoupon_minimum
+	</sql>
+	
+	<resultMap type="com.bquan.entity.mysql.UserCoupon" id="userCouponMap">
+		<id column="userCoupon_id" property="id"/>
+		<result column="userCoupon_create_date" property="createDate" />
+		<result column="userCoupon_modify_date" property="modifyDate" />
+		<result column="userCoupon_limit_date" property="limitDate" />
+		<result column="userCoupon_status" property="status" />
+		<result column="userCoupon_price" property="price" />
+		<result column="userCoupon_use_date" property="useDate" />
+		<result column="userCoupon_orders_id" property="ordersId" />
+		<result column="userCoupon_minimum" property="minimum" />
+	</resultMap>
+	
+    <select id="select" resultMap="userCouponMap" >
+     	select 
+     		<include refid="Base_UserCoupon_Column_List" />
+     	from 
+     		ct_user_coupon as userCoupon
+     	where
+     		1=1
+     		<if test="userId!=null">
+     			and userCoupon.user_id = #{userId}
+     		</if>
+     		<if test="status!=null">
+     			and userCoupon.status = #{status}
+     		</if>
+     		<if test="notStatus!=null">
+     			and userCoupon.status != #{notStatus}
+     		</if>
+     		
+     		order by userCoupon.price desc
+    </select>
+	
+</mapper>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bquan.dao.write.UserCouponWriteMapper">
+	
+	<insert id="insert" parameterType="com.bquan.entity.mysql.UserCoupon">
+		insert into 
+			ct_user_coupon 
+			(id,user_id,status,price,coupon_id,limit_date,create_date,modify_date,minimum,orders_id)
+		values
+			(#{id,jdbcType=VARCHAR},#{userId},#{status},#{price},#{couponId},#{limitDate},#{createDate},#{modifyDate},#{minimum},#{ordersId})
+	</insert>
+	
+	<update id="update" parameterType="com.bquan.entity.mysql.UserCoupon" keyProperty="id" keyColumn="id" >
+		<if test="id!=null">
+			update
+				ct_user_coupon
+			set
+				id=#{id}
+			<if test="userId!=null">,user_id=#{userId}</if>
+			<if test="status!=null">,status=#{status}</if>
+			<if test="price!=null">,price=#{price}</if>
+			<if test="couponId!=null">,coupon_id=#{couponId}</if>
+			<if test="limitDate!=null">,limit_date=#{limitDate}</if>
+			<if test="minimum!=null">,minimum=#{minimum}</if>
+			<if test="createDate!=null">,create_date=#{createDate}</if>
+			<if test="modifyDate!=null">,modify_date=#{modifyDate}</if>
+			<if test="ordersId!=null">,orders_id=#{ordersId}</if>
+			where id=#{id}
+		</if>
+	</update>
+	
+</mapper>

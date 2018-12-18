@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bquan.dao.write.CommissionWriteMapper" >
+  
+  <delete id="delete" parameterType="com.bquan.entity.mysql.Commission" >
+  	<if test="id!=null">
+	  	delete from 
+			ct_commission
+	    where 
+	    	id = #{id}
+  	</if>
+  </delete>
+  
+  <insert id="insert" parameterType="com.bquan.entity.mysql.Commission" >
+		INSERT INTO ct_commission (
+    		id
+            ,username
+            ,invite_username
+            ,order_id
+            ,price
+            ,send_money
+            ,is_send
+            ,create_date
+            ,modify_date
+		)
+		VALUES
+		(
+			#{id}
+            ,#{username}
+            ,#{inviteUsername}
+            ,#{orderId}
+            ,#{price}
+            ,#{sendMoney}
+            ,#{isSend}
+            ,#{createDate}
+            ,#{modifyDate}
+		)
+	</insert>
+	
+	<update id="update" parameterType="com.bquan.entity.mysql.Commission">
+		UPDATE ct_commission
+		<set>
+			<if test="id!= null">id = #{id}</if>
+            <if test="username!= null">,username = #{username}</if>
+            <if test="inviteUsername!= null">,invite_username = #{inviteUsername}</if>
+            <if test="orderId!= null">,order_id = #{orderId}</if>
+            <if test="price!= null">,price = #{price}</if>
+            <if test="sendMoney!= null">,send_money = #{sendMoney}</if>
+            <if test="isSend!= null">,is_send = #{isSend}</if>
+            <if test="createDate!= null">,create_date = #{createDate}</if>
+            <if test="modifyDate!= null">,modify_date = #{modifyDate}</if>
+		</set>
+		WHERE id = #{id}
+	</update>
+	
+</mapper>
+

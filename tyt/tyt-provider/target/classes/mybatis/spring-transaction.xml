@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/aop   
+        http://www.springframework.org/schema/aop/spring-aop-4.0.xsd   
+        http://www.springframework.org/schema/beans   
+        http://www.springframework.org/schema/beans/spring-beans-4.0.xsd   
+        http://www.springframework.org/schema/tx   
+        http://www.springframework.org/schema/tx/spring-tx-4.0.xsd">
+        
+        
+	<!-- 事务控制 begin -->
+
+	<!-- 事务相关控制 -->
+	<bean name="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<!-- 基本事务定义,使用transactionManager作事务管理,默认get* find*方法的事务为readonly,其余方法按默认设置. 默认的设置请参考Spring文档事务一章. -->
+	<tx:advice id="txAdvice" transaction-manager="transactionManager">
+		<tx:attributes>
+			<tx:method name="*" read-only="true" />
+		</tx:attributes>
+	</tx:advice>
+
+	<!-- 以AspectJ方式 定义 AOP -->
+	<aop:config proxy-target-class="true">
+		<aop:advisor pointcut="execution(* com.bquan.service.read..*.*(..))"
+			advice-ref="txAdvice" />
+	</aop:config>
+
+	<!-- 事务控制 end -->
+
+</beans>

@@ -1,0 +1,526 @@
+<!--
+ - Copyright 1999-2011 Alibaba Group.
+ -  
+ - Licensed under the Apache License, Version 2.0 (the "License");
+ - you may not use this file except in compliance with the License.
+ - You may obtain a copy of the License at
+ -  
+ -      http://www.apache.org/licenses/LICENSE-2.0
+ -  
+ - Unless required by applicable law or agreed to in writing, software
+ - distributed under the License is distributed on an "AS IS" BASIS,
+ - WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ - See the License for the specific language governing permissions and
+ - limitations under the License.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>${tyt-groupid}</groupId>
+		<artifactId>tyt</artifactId>
+		<version>${tyt-version}</version>
+	</parent>
+	<artifactId>tyt-provider</artifactId>	
+	<packaging>jar</packaging>
+	<name>${project.artifactId}</name>
+	<description>provider module</description>
+	<properties>
+		<skip_maven_deploy>false</skip_maven_deploy>
+		
+		<mybatis_version>3.4.1</mybatis_version>
+		<mybatis_spring_version>1.3.0</mybatis_spring_version>
+		<mybatis_pagehelper_version>4.0.0</mybatis_pagehelper_version>
+		<mysql_version>5.1.38</mysql_version>
+		<druid_version>1.0.28</druid_version>
+		
+		<jsqlparser_version>0.9.1</jsqlparser_version>
+		<aspectj_version>1.6.2</aspectj_version>
+		<cglib_version>3.1</cglib_version>
+		<commons_cli_version>1.3.1</commons_cli_version>
+		<jackson_version>1.9.13</jackson_version>
+		<cobar_version>1.0.5</cobar_version>
+		
+	</properties>
+	<dependencies>
+	
+		<!-- 内部模块引用 -->
+		<dependency>
+             <groupId>${tyt-groupid}</groupId>
+            <artifactId>tyt-common-provider</artifactId>
+            <version>${tyt-version}</version>
+        </dependency>
+		
+		<dependency>
+			<groupId>${tyt-groupid}</groupId>
+			<artifactId>tyt-api</artifactId>
+			<version>${tyt-version}</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>jcl-over-slf4j</artifactId>
+					<groupId>org.slf4j</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>dubbo</artifactId>
+			<version>2.5.4-SNAPSHOT</version>
+			<exclusions> 
+   				<exclusion>  
+	                <artifactId>spring</artifactId>  
+	                <groupId>org.springframework</groupId>  
+                </exclusion>  
+            </exclusions> 
+		</dependency>
+		
+		<!-- spring引用 -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-webmvc</artifactId>
+			<version>${springframework-version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-web</artifactId>
+			<version>${springframework-version}</version>
+		</dependency>
+		
+		<dependency>
+		    <groupId>org.springframework</groupId>
+		    <artifactId>spring-tx</artifactId>
+		    <version>${springframework-version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-orm</artifactId>
+			<version>${springframework-version}</version>
+		</dependency>
+		
+		<dependency>
+	        <groupId>org.springframework</groupId>
+	        <artifactId>spring-aop</artifactId>
+	        <version>${springframework-version}</version>
+	    </dependency>
+	    
+	    <dependency>
+	        <groupId>org.springframework</groupId>
+	        <artifactId>spring-context-support</artifactId>
+	        <version>${springframework-version}</version>
+	    </dependency>
+	    
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-core</artifactId>
+			<version>${springframework-version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-beans</artifactId>
+			<version>${springframework-version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<version>${springframework-version}</version>
+		</dependency>
+		
+		<dependency>
+		    <groupId>org.springframework</groupId>
+		    <artifactId>spring-jdbc</artifactId>
+		    <version>${springframework-version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.javassist</groupId>
+			<artifactId>javassist</artifactId>
+			<version>3.15.0-GA</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.jboss.netty</groupId>
+			<artifactId>netty</artifactId>
+			<version>3.2.5.Final</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.apache.mina</groupId>
+			<artifactId>mina-core</artifactId>
+			<version>1.1.7</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>slf4j-api</artifactId>
+					<groupId>org.slf4j</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.glassfish.grizzly</groupId>
+			<artifactId>grizzly-core</artifactId>
+			<version>2.1.4</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+			<version>4.3.3</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>fastjson</artifactId>
+			<version>1.1.39</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.thoughtworks.xstream</groupId>
+			<artifactId>xstream</artifactId>
+			<version>1.4.1</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.apache.bsf</groupId>
+			<artifactId>bsf-api</artifactId>
+			<version>3.1</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.apache.zookeeper</groupId>
+			<artifactId>zookeeper</artifactId>
+			<version>3.3.3</version>
+			<exclusions>
+				<exclusion>
+					<groupId>com.sun.jmx</groupId>
+					<artifactId>jmxri</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>com.sun.jdmk</groupId>
+					<artifactId>jmxtools</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>javax.jms</groupId>
+					<artifactId>jms</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.github.sgroschupf</groupId>
+			<artifactId>zkclient</artifactId>
+			<version>0.1</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.netflix.curator</groupId>
+			<artifactId>curator-framework</artifactId>
+			<version>1.1.16</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>slf4j-api</artifactId>
+					<groupId>org.slf4j</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.googlecode.xmemcached</groupId>
+			<artifactId>xmemcached</artifactId>
+			<version>1.3.6</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>slf4j-api</artifactId>
+					<groupId>org.slf4j</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.apache.cxf</groupId>
+			<artifactId>cxf-rt-frontend-simple</artifactId>
+			<version>2.6.1</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.apache.cxf</groupId>
+			<artifactId>cxf-rt-transports-http</artifactId>
+			<version>2.6.1</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.apache.thrift</groupId>
+			<artifactId>libthrift</artifactId>
+			<version>0.8.0</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>slf4j-api</artifactId>
+					<groupId>org.slf4j</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.caucho</groupId>
+			<artifactId>hessian</artifactId>
+			<version>4.0.7</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>2.5</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.mortbay.jetty</groupId>
+			<artifactId>jetty</artifactId>
+			<version>6.1.26</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.2.16</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>redis.clients</groupId>
+			<artifactId>jedis</artifactId>
+			<version>2.1.0</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>javax.validation</groupId>
+			<artifactId>validation-api</artifactId>
+			<version>1.0.0.GA</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-validator</artifactId>
+			<version>4.2.0.Final</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>slf4j-api</artifactId>
+					<groupId>org.slf4j</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		
+		<dependency>
+			<groupId>javax.cache</groupId>
+			<artifactId>cache-api</artifactId>
+			<version>0.4</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.mybatis</groupId>
+			<artifactId>mybatis</artifactId>
+			<version>${mybatis_version}</version>
+		</dependency>
+		
+<!-- 		<dependency>
+	    	<groupId>org.mybatis.generator</groupId>
+	    	<artifactId>mybatis-generator-core</artifactId>
+	    	<version>${mybatis_generator_version}</version>
+		 </dependency> -->
+		 
+		<dependency>
+			<groupId>org.mybatis</groupId>
+			<artifactId>mybatis-spring</artifactId>
+			<version>${mybatis_spring_version}</version>
+		</dependency>
+		
+	    <dependency>
+	    	<groupId>com.github.pagehelper</groupId>
+	      	<artifactId>pagehelper</artifactId>
+	        <version>${mybatis_pagehelper_version}</version>
+	    </dependency>
+	    
+	    <dependency>
+	      	<groupId>com.github.jsqlparser</groupId>
+	      	<artifactId>jsqlparser</artifactId>
+	      	<version>${jsqlparser_version}</version>
+	    </dependency>
+	    
+		<dependency>
+		     <groupId>com.alibaba</groupId>
+		     <artifactId>druid</artifactId>
+		     <version>${druid_version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.aspectj</groupId>
+			<artifactId>aspectjweaver</artifactId>
+			<version>${aspectj_version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>${mysql_version}</version>
+		</dependency>	
+		
+		<dependency>
+			<groupId>cglib</groupId>
+			<artifactId>cglib</artifactId>
+			<version>${cglib_version}</version>
+		</dependency>
+		
+        <dependency>
+            <groupId>com.alibaba.cobar</groupId>
+            <artifactId>cobar-client</artifactId>
+            <version>${cobar_version}</version>
+            <exclusions>
+            	<exclusion>
+            		<artifactId>spring</artifactId>
+            		<groupId>org.springframework</groupId>
+            	</exclusion>
+            	<exclusion>
+            		<artifactId>slf4j-api</artifactId>
+            		<groupId>org.slf4j</groupId>
+            	</exclusion>
+            	<exclusion>
+            		<artifactId>slf4j-jcl</artifactId>
+            		<groupId>org.slf4j</groupId>
+            	</exclusion>
+            </exclusions>
+        </dependency>
+        
+		<dependency>
+			<groupId>commons-cli</groupId>
+			<artifactId>commons-cli</artifactId>
+			<version>${commons_cli_version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.codehaus.jackson</groupId>
+			<artifactId>jackson-core-asl</artifactId>
+			<version>${jackson_version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.codehaus.jackson</groupId>
+			<artifactId>jackson-mapper-asl</artifactId>
+			<version>${jackson_version}</version>
+		</dependency>
+
+		<dependency>
+		    <groupId>commons-beanutils</groupId>
+		    <artifactId>commons-beanutils</artifactId>
+		    <version>1.7.0</version>
+		</dependency>
+		
+		<dependency>
+		    <groupId>commons-collections</groupId>
+		    <artifactId>commons-collections</artifactId>
+		    <version>3.2</version>
+		</dependency>
+		
+		<dependency>
+		    <groupId>commons-lang</groupId>
+		    <artifactId>commons-lang</artifactId>
+		    <version>2.4</version>
+		</dependency>
+		
+		<dependency>
+		    <groupId>commons-logging</groupId>
+		    <artifactId>commons-logging</artifactId>
+		    <version>1.1</version>
+		</dependency>
+		
+		<dependency>
+		    <groupId>net.sf.ezmorph</groupId>
+		    <artifactId>ezmorph</artifactId>
+		    <version>1.0.4</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>javax</groupId>
+			<artifactId>javaee-api</artifactId>
+			<version>7.0</version>
+			<scope>provided</scope>
+		</dependency>
+	
+	</dependencies>
+	<build>
+		<plugins>
+			<plugin>
+			    <groupId>org.apache.maven.plugins</groupId>
+			    <artifactId>maven-compiler-plugin</artifactId>
+			    <version>3.5.1</version>
+			    <configuration>
+			      <source>1.7</source>
+			      <target>1.7</target>
+			    </configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>unpack</id>
+						<phase>package</phase>
+						<goals>
+							<goal>unpack</goal>
+						</goals>
+						<configuration>
+							<artifactItems>
+								<artifactItem>
+									<groupId>com.alibaba</groupId>
+									<artifactId>dubbo</artifactId>
+									<version>2.5.4-SNAPSHOT</version>
+									<outputDirectory>${project.build.directory}/dubbo</outputDirectory>
+									<includes>META-INF/assembly/**</includes>
+								</artifactItem>
+							</artifactItems>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+                <configuration>
+                    <descriptor>src/main/assembly/assembly.xml</descriptor>
+                </configuration>
+                <executions>
+					<execution>
+						<id>make-assembly</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
+            </plugin>
+            <!-- 
+            <plugin>  
+                <groupId>org.codehaus.mojo</groupId>  
+                <artifactId>exec-maven-plugin</artifactId>  
+                <version>1.2</version>  
+                <executions>  
+                    <execution>  
+                        <id>Creating a Production Build with Sencha Command</id>  
+                        <phase>package</phase>  
+                        <goals>  
+                            <goal>exec</goal>  
+                        </goals>  
+                        <configuration>  
+                        	<executable>cmd</executable> 
+					         <arguments> 
+					         	 <argument>/C</argument>
+					         	 <argument>start</argument> 
+					             <argument>d:\cloudlinkStart.bat</argument> 
+					         </arguments>
+                        </configuration>  
+                    </execution>  
+                </executions>  
+            </plugin>
+             -->
+		</plugins>
+	</build>
+</project>

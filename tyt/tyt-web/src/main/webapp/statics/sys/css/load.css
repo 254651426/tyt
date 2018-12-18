@@ -1,0 +1,54 @@
+.loading {
+	position: absolute; 
+	top: 45%;
+	left: 45%;
+	width: auto;
+	z-index:101;
+	padding: 6px; 
+	margin: 5px;
+	text-align: center;
+	display: none;
+	border: 1px solid #ddd;  /*default*/
+	font-size: 14px;
+	background-color: #d9edf7;
+}
+.loading span {
+	display: inline-block;
+	width: 5px;
+	height:30%;
+	margin-right: 5px;
+	border-radius: 50%;
+	background-color: #007ae3;
+	-webkit-animation: load 1.04s ease infinite;
+}
+.loading p {
+	display:inline;
+}
+
+.loading span:last-child {
+	margin-right: 0px;
+}
+ @-webkit-keyframes load {
+ 0% {
+ opacity: 1;
+}
+ 100% {
+ opacity: 0;
+}
+}
+ .loading span:nth-child(1) {
+ -webkit-animation-delay:0.13s;
+}
+ .loading span:nth-child(2) {
+ -webkit-animation-delay:0.26s;
+}
+ .loading span:nth-child(3) {
+ -webkit-animation-delay:0.39s;
+}
+ .loading span:nth-child(4) {
+ -webkit-animation-delay:0.52s;
+}
+ .loading span:nth-child(5) {
+ -webkit-animation-delay:0.65s;
+}
+

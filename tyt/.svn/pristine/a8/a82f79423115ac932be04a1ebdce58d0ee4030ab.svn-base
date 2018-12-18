@@ -1,0 +1,24 @@
+package com.bquan.service.write;
+
+import javax.annotation.Resource;
+
+import com.bquan.dao.write.WebDomainWriteMapper;
+import com.bquan.entity.mysql.WebDomain;
+
+
+/**
+ * 列表设置属性 Service层写接口实现
+ * @author liuxiaokang
+ * @createTime 2016-08-20
+ */
+public class WebDomainWriteServiceImpl extends BaseWriteServiceImpl<WebDomain> implements WebDomainWriteService{
+
+	@Resource
+	private WebDomainWriteMapper webDomainWriteMapper;
+
+	@Override
+	public WebDomainWriteMapper getBaseWriteMapper() {
+		return webDomainWriteMapper;
+	}
+	
+}

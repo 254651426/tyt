@@ -1,0 +1,12 @@
+.page-select{
+	margin: 20px 0;
+	padding: 5px 0px; 
+	border-radius: 3px; 
+	border: 1px solid #dddddd;
+}
+.page-div{
+	padding-left:42% ; 
+	margin: 20px 0; 
+	float: right;
+	padding: 0px;
+}

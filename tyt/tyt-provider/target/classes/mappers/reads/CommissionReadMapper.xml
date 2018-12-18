@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bquan.dao.read.CommissionReadMapper" >
+  <resultMap id="BaseResultMap" type="com.bquan.entity.mysql.Commission" >
+    	<result column="commission_id" property="id" />
+    	<result column="commission_username" property="username" />
+    	<result column="commission_invite_username" property="inviteUsername" />
+    	<result column="commission_order_id" property="orderId" />
+    	<result column="commission_price" property="price" />
+    	<result column="commission_send_money" property="sendMoney" />
+    	<result column="commission_is_send" property="isSend" />
+    	<result column="commission_create_date" property="createDate" />
+    	<result column="commission_modify_date" property="modifyDate" />
+    	<association resultMap="com.bquan.dao.read.OrdersReadMapper.BaseResultMap"  property="orders"></association>
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+		commission.id as commission_id,
+		commission.username as commission_username,
+		commission.invite_username as commission_invite_username,
+		commission.order_id as commission_order_id,
+		commission.price as commission_price,
+		commission.send_money as commission_send_money,
+		commission.is_send as commission_is_send,
+		commission.create_date as commission_create_date,
+		commission.modify_date as commission_modify_date
+  </sql>
+  
+  <sql id="Base_Where_Sql" >
+  	<if test="id!=null"> and commission.id = #{id} </if>
+  	<if test="username!=null"> and commission.username = #{username} </if>
+  	<if test="inviteUsername!=null"> and commission.invite_username = #{inviteUsername} </if>
+  	<if test="orderId!=null"> and commission.order_id = #{orderId} </if>
+  	<if test="price!=null"> and commission.price = #{price} </if>
+  	<if test="sendMoney!=null"> and commission.send_money = #{sendMoney} </if>
+  	<if test="isSend!=null"> and commission.is_send = #{isSend} </if>
+  	<if test="createDate!=null"> and commission.create_date = #{createDate} </if>
+  	<if test="modifyDate!=null"> and commission.modify_date = #{modifyDate} </if>
+  </sql>
+  
+  <select id="select" resultMap="BaseResultMap"  >
+    select 
+    <include refid="Base_Column_List" />,
+    <include refid="com.bquan.dao.read.OrdersReadMapper.Base_Column_List" />
+    from ct_commission commission
+    left join orders as orders on commission.order_id = orders.order_id
+    <include refid="baseReadMapper.searchSql" />
+    <include refid="Base_Where_Sql" />
+    <include refid="baseReadMapper.orderSql" />
+  </select>
+  
+  <select id="count" resultType="Integer"  >
+    select 
+    	count(id)
+    from ct_commission commission
+    <include refid="baseReadMapper.searchSql" />
+    <include refid="Base_Where_Sql" />
+  </select>
+  
+  <select id="sum" resultType="java.math.BigDecimal"  >
+    select 
+    	ifnull(sum(${sumItem}),0)
+    from ct_commission commission
+    <include refid="baseReadMapper.searchSql" />
+    <include refid="Base_Where_Sql" />
+  </select>
+  
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

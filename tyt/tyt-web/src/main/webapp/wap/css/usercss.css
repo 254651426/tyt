@@ -1,0 +1,187 @@
+@charset "utf-8";
+/* CSS Document */
+
+.img-circle.profile_img {
+    background: #fff;
+    z-index: 1000;
+    position: inherit;
+    margin-top: 50px;
+    border: 1px solid rgba(52, 73, 94, .44);
+    padding: 4px;
+	width: 30%;
+ margin-bottom: 30px;
+}
+.logo{text-align:center;}
+.profile_pic {
+    width: 35%;
+}
+.bg{ background:url(../images/userpay/bg.jpg) no-repeat top;
+background-size:100%;min-height:607px;
+    }
+* {
+				margin: 0;
+				padding: 0;
+				box-sizing: border-box;
+			}
+			
+			html,
+			body {
+				height: 100%;
+				overflow: hidden;
+			}
+			
+			.clearfix:after {
+				content: "\200B";
+				display: block;
+				height: 0;
+				clear: both;
+			}
+			
+			.clearfix {
+				*zoom: 1;
+			}
+			
+			
+			/*IE/7/6*/
+			
+			.shuru div::-webkit-scrollbar {
+				width: 0;
+				height: 0;
+				-webkit-transition: 1s;
+			}
+			
+			.shuru div::-webkit-scrollbar-thumb {
+				background-color: #a7afb4;
+				background-clip: padding-box;
+				min-height: 28px;
+			}
+			
+			.shuru div::-webkit-scrollbar-thumb:hover {
+				background-color: #525252;
+				background-clip: padding-box;
+				min-height: 28px;
+			}
+			
+			.shuru div::-webkit-scrollbar-track-piece {
+				background-color: #ccd0d2;
+			}
+			
+			.wrap {
+				position: relative;
+				margin: auto;
+				max-width: 640px;
+				min-width: 320px;
+				width: 100%;
+				height: 100%;
+				overflow: hidden;
+			}
+			
+			.layer-content {
+				position: absolute;
+				left: 50%;
+				bottom: 0px;
+				width: 100%;
+				max-width: 750px;
+				height: auto;
+				z-index: 12;
+				-webkit-transform: translateX(-50%);
+				transform: translateX(-50%);
+			}
+			
+			/* 输入表单 */
+			
+			.edit_cash {
+				display: block;
+				margin-top: 15px;
+				padding: 0 15px;
+				margin: 0 auto;
+				width: 90%;
+				border: 1px solid #CFCFCF;
+				border-radius: 10px;
+				background-color: #fff;
+			}
+			
+			.edit_cash p {
+				font-size: 14px;
+				color: #8D8D8F;
+			}
+			
+			.shuru {
+				position: relative;
+				margin-bottom: 10px;
+			}
+			
+			.shuru div {
+				border: none;
+				width: 100%;
+				height: 50px;
+				font-size: 25px;
+				line-height: 50px;
+				border-bottom: 1px solid #CFCFCF;
+				text-indent: 30px;
+				outline: none;
+				white-space: pre;
+				overflow-x: scroll;
+			}
+			
+			.shuru span {
+				position: absolute;
+				top: 5px;
+				font-size: 25px;
+			}
+			
+			.submit {
+				display: block;
+				margin: 20px auto 0;
+				width: 90%;
+				height: 40px;
+				font-size: 16px;
+				color: #fff;
+				border: 1px solid #fff;
+				border-radius: 50px;
+				box-shadow:0px 0px 8px #acd7ff;
+				background-image:-webkit-linear-gradient(left, #0370f7, #2cd4fb);
+			}
+			.submit-m {
+				display: block;
+				margin: 20px auto 0;
+				width: 100%;
+				height: 40px;
+				font-size: 16px;
+				color: #fff;
+				border: 1px solid #fff;
+				border-radius: 50px;
+				box-shadow:0px 0px 8px #acd7ff;
+				background-image:-webkit-linear-gradient(left, #0370f7, #2cd4fb);
+			}
+			.mer-bgcolor{ background-color:#f4f4f4;height:100%;}
+			/* 键盘 */
+			
+			.form_edit {
+				width: 100%;
+				background: #D1D4DD;
+				border-top: 2px solid #D1D4DD;
+			}
+			
+			.form_edit> div {
+				margin-bottom: 2px;
+				margin-right: 0.5%;
+				float: left;
+				width: 33%;
+				height: 45px;
+				text-align: center;
+				color: #333;
+				line-height: 45px;
+				font-size: 18px;
+				font-weight: 600;
+				background-color: #fff;
+				border-radius: 5px;
+			}
+			
+			.form_edit> div:nth-child(3n) {
+				margin-right: 0;
+			}
+			
+			.form_edit> div:last-child {
+				background-color: #DEE1E9;
+			}

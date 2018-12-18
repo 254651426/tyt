@@ -1,0 +1,101 @@
+package com.bquan.controller.sys;
+
+import com.bquan.annotation.SysLog;
+import com.bquan.bean.Pager;
+import com.bquan.entity.mysql.UseLog;
+import com.bquan.service.read.UseLogReadService;
+import com.bquan.service.write.UseLogWriteService;
+import com.bquan.util.*;
+import com.bquan.validator.group.AddGroup;
+import com.bquan.validator.group.UpdateGroup;
+import com.bquan.validator.Assert;
+import com.bquan.validator.ValidatorUtils;
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.apache.shiro.crypto.hash.Sha256Hash;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * 用户日志
+ * 
+ * @author liuxiaokang
+ * @createTime 2018-06-08
+ */
+@RestController
+@RequestMapping("/sys/useLog")
+public class SysUseLogController extends AbstractController {
+	
+	@Autowired
+	private UseLogReadService useLogReadService;
+	@Autowired
+	private UseLogWriteService useLogWriteService;
+	
+	/**
+	 * 所有用户列表
+	 */
+	@SysLog("查看用户日志")
+	@RequestMapping("/list")
+	@RequiresPermissions("sys:useLog:list")
+	public R list(@RequestParam Map<String, Object> params){
+		try {
+			params.put("orderBy", "create_time");// 排序字段
+			params.put("order", "desc");  // 排序方式
+			return R.ok().put("page", useLogReadService.findPager(new Pager(params)));
+		} catch (Exception e) {
+			return R.error("查询异常");
+		}
+	}
+	
+	/**
+	 * 查看
+	 */
+	@RequestMapping("/info/{id}")
+	@RequiresPermissions("sys:useLog:info")
+	public R info(@PathVariable("id") String id){
+		UseLog useLog = useLogReadService.get(id);
+		return R.ok().put("useLog", useLog);
+	}
+	
+	/**
+	 * 保存
+	 */
+	@SysLog("保存用户日志")
+	@RequestMapping("/save")
+	@RequiresPermissions("sys:useLog:save")
+	public R save(@RequestBody UseLog useLog){
+		//ValidatorUtils.validateEntity(user, AddGroup.class);
+		useLogWriteService.insert(useLog);
+		return R.ok();
+	}
+	
+	/**
+	 * 修改
+	 */
+	@SysLog("修改用户日志")
+	@RequestMapping("/update")
+	@RequiresPermissions("sys:useLog:update")
+	public R update(@RequestBody UseLog useLog){
+		//ValidatorUtils.validateEntity(user, UpdateGroup.class);
+		String id = String.valueOf(useLog.getId());
+		UseLog persistent = useLogReadService.get(id);
+		BeanUtils.copyProperties(useLog, persistent, 
+				new String[] {"id", "createDate", "modifyDate"});
+		useLogWriteService.update(persistent);
+		return R.ok();
+	}
+	
+	/**
+	 * 删除
+	 */
+	@SysLog("删除用户日志")
+	@RequestMapping("/delete")
+	@RequiresPermissions("sys:useLog:delete")
+	public R delete(String id){
+		useLogWriteService.delete(id);
+		return R.ok();
+	}
+}

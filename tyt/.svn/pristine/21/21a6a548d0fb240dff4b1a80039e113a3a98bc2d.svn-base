@@ -1,0 +1,260 @@
+<!doctype html>
+<%@ page contentType="text/html;charset=UTF-8" %>
+<html>
+<head>
+<meta charset="utf-8">
+<%@ include file="/WEB-INF/page/web/include/head.jsp"%>
+<title>影盾</title>
+</head>
+
+<body>
+<%@ include file="/WEB-INF/page/web/include/tab.jsp"%>
+
+<!--客户端下载-->
+<div class="downloadbox">
+  <div class="downloadbox02">
+	<div class="download-img">
+    	<img src="${rc.contextPath}/statics/web/images/down.jpg">
+    </div>
+    <div class="download-right">
+    	<ul>
+        	<li><h2>支持各主流系统平台使用</h2></li>
+            <li>
+	            <p>
+	            	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	            	Windows、Mac、Android、Ios提供有专用客户端软件，无需手动配置，
+	            	下载软件运行即可使用。</br>
+	            	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	            	如果遇到无法访问外网的情况，请阅读我们的使用教程解决问题，
+	            	或者直接联系我们的客服（QQ：1023468189）。
+	            </p>
+            </li>
+        </ul>
+    </div>
+    <div class="clearfix"></div>
+    <div class="editionbox">
+    	<!-- 
+    	<div class="edition edition4">
+	    	<div class="edition-win">
+	        	<div class="edition-win-left"><img src="${rc.contextPath}/statics/web/images/icon13.png"></div>
+	            <div class="edition-win-right"><h2>浏览器插件</h2><p>支持windows,mac,linux系统</p><p>QQ,360,UC,Chrome等浏览器</p><a href="http://168.235.251.231/client/plugTyt.zip">官网下载</a></div>
+	        </div>
+        </div>
+    	 -->
+        <div class="edition edition2">
+	    	<div class="edition-win">
+	        	<div class="edition-win-left"><img src="${rc.contextPath}/statics/web/images/icon11.png"></div>
+	            <div class="edition-win-right"><h2>Windows 客户端</h2><p>支持Win 10/8/7/XP</p><a href="http://168.235.251.231/client/w.zip">官网下载</a></div>
+	        </div>
+        </div>
+        
+        <div class="edition edition3">
+	    	<div class="edition-win">
+	        	<div class="edition-win-left"><img src="${rc.contextPath}/statics/web/images/mac.png"></div>
+	            <div class="edition-win-right"><h2>Mac客户端</h2><p>支持所有Mac系统</p><a href="http://168.235.251.231/client/plugTyt.zip">官网下载</a></div>
+	        </div>
+        </div>
+        
+        
+        
+        <div class="edition edition4">
+	    	<div class="edition-win">
+	        	<div class="edition-win-left"><img src="${rc.contextPath}/statics/web/images/android.png"></div>
+	            <div class="edition-win-right"><h2>安卓客户端</h2><p>支持安卓平台</p><a href="http://168.235.251.231/client/android.apk">官网下载</a><a href="${ctxStatic }/tyt/web/user/user">使用教程</a></div>
+	        </div>
+        </div>
+        
+        <div class="edition edition4">
+	    	<div class="edition-win">
+	        	<div class="edition-win-left"><img src="${rc.contextPath}/statics/web/images/icon12.png"></div>
+	            <div class="edition-win-right"><h2>IOS客户端</h2><p>支持IOS平台</p><a href="https://itunes.apple.com/us/app/wingy-http-s-socks5-proxy-utility/id1178584911?mt=8">官网下载</a><a href="${ctxStatic }/tyt/web/user/user">使用教程</a></div>
+	        </div>
+        </div>
+        
+    </div>
+      <div class="clearfix"></div>
+  </div>
+</div>
+
+
+<div class="downloadbox downloadbox3">
+  <div class="downloadbox02">
+	
+    <div class="download-right">
+    	<ul>
+    		<li><h2>安装问题解惑</h2></li>
+            <li>
+            	<p>
+            		软件安装时提示windows已保护你的电脑，无法继续安装时，点击更多信息，然后点击仍要运行即可。
+            	</p>
+            </li>
+        </ul> 
+    </div>
+    
+    <div class="download-img">
+    	<img style="width:300px;" src="${rc.contextPath}/statics/web/images/install1.png" />
+    	<br>
+    	<img style="width:300px;" src="${rc.contextPath}/statics/web/images/install2.png">
+    </div>
+    
+      <div class="clearfix"></div>
+  </div>
+</div>
+
+<div class="downloadbox downloadbox3">
+  <div class="downloadbox02">
+	
+    <div class="download-right">
+    	<ul>
+    		<li><h2>360安全卫士提醒</h2></li>
+            <li>
+            	<p>
+            		影盾软件在启动时会进行系统加速设置，
+            		如果您的电脑安装了360安全卫士，运行影盾时会提示影盾正在修改注册表，请勾选不再提醒，然后点击更多选择允许程序所有操作。（如果让360阻止了影盾的设置，可能会导致无法成功对系统加速）
+            	</p>
+            </li>
+        </ul> 
+    </div>
+    
+    <div class="download-img">
+    	<img style="width:240px;" src="${rc.contextPath}/statics/web/images/360safe.png">
+    </div>
+    
+      <div class="clearfix"></div>
+  </div>
+</div>
+
+<div class="downloadbox downloadbox3">
+  <div class="downloadbox02">
+	
+    <div class="download-right">
+    	<ul>
+        	<li><h2>桌面软件和游戏加速教程</h2></li>
+            <li>
+            	<p>
+            		影盾客户端软件默认针对浏览器加速。如果您需要对电脑上的其他软件或者游戏软件加速，请阅读一下教程。
+            	</p>
+            </li>
+        </ul> 
+    </div>
+    
+    <div class="download-img">
+    	<img style="width:300px;" src="${rc.contextPath}/statics/web/images/tishi.jpg">
+    </div>
+    
+      <div class="clearfix"></div>
+  </div>
+</div>
+
+<a href="http://168.235.251.231/client/proxy.zip">
+	<div class="downloadbox downloadbox3">
+	  <div class="downloadbox02">
+		
+	    <div class="download-right">
+	    	<ul>
+	            <li>
+	            	<p>
+	            		1.点击下载辅助软件
+	            	</p>
+	            </li>
+	        </ul> 
+	    </div>
+	    
+	    <div class="download-img">
+	    	<img style="width:240px;" src="${rc.contextPath}/statics/web/images/d.png">
+	    </div>
+	    
+	      <div class="clearfix"></div>
+	  </div>
+	</div>
+</a>
+
+<div class="downloadbox downloadbox3">
+  <div class="downloadbox02">
+	
+    <div class="download-right">
+    	<ul>
+            <li>
+            	<p>
+            		2.运行影盾客户端软件或者启动浏览器插件（提示：请勿同时运行，否则端口会冲突）
+            	</p>
+            </li>
+        </ul> 
+    </div>
+    
+    <div class="download-img">
+    	<img style="width:240px;" src="${rc.contextPath}/statics/web/images/clientTyt.png">
+    </div>
+    
+      <div class="clearfix"></div>
+  </div>
+</div>
+
+<div class="downloadbox downloadbox3">
+  <div class="downloadbox02">
+	
+    <div class="download-right">
+    	<ul>
+            <li>
+            	<p>
+            		3.解压proxy.zip文件，并运行SocksCap64_RunAsAdmin.exe。
+            	</p>
+            </li>
+        </ul> 
+    </div>
+    
+    <div class="download-img">
+    	<img style="width:400px;" src="${rc.contextPath}/statics/web/images/proxy.png">
+    </div>
+    
+      <div class="clearfix"></div>
+  </div>
+</div>
+
+<div class="downloadbox downloadbox3">
+  <div class="downloadbox02">
+	
+    <div class="download-right">
+    	<ul>
+            <li>
+            	<p>
+            		4.将您要代理的软件的快捷方式拖动到打开的软件窗口中
+            	</p>
+            </li>
+        </ul> 
+    </div>
+    
+    <div class="download-img">
+    	<img style="width:400px;" src="${rc.contextPath}/statics/web/images/stp.png">
+    </div>
+    
+      <div class="clearfix"></div>
+  </div>
+</div>
+
+<div class="downloadbox downloadbox3">
+  <div class="downloadbox02">
+	
+    <div class="download-right">
+    	<ul>
+            <li>
+            	<p>
+            		5.选中您要代理软件的图标，点击运行。这样您的软件或者游戏就开启加速啦~
+            	</p>
+            </li>
+        </ul> 
+    </div>
+    
+    <div class="download-img">
+    	<img style="width:400px;" src="${rc.contextPath}/statics/web/images/stp1.png">
+    </div>
+    
+      <div class="clearfix"></div>
+  </div>
+</div>
+
+<!--版权-->
+<%@ include file="/WEB-INF/page/web/include/footer.jsp"%>
+</div>
+</body>
+</html>

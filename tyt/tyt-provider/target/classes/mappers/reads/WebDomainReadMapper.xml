@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bquan.dao.read.WebDomainReadMapper">
+	<resultMap id="BaseResultMap" type="com.bquan.entity.mysql.WebDomain">
+		<result column="webDomain_id" property="id" />
+		<result column="webDomain_domain" property="domain" />
+		<result column="webDomain_status" property="status" />
+		<result column="webDomain_user_id" property="userId" />
+		<result column="webDomain_type" property="type" />
+		<result column="webDomain_create_date" property="createDate" />
+		<result column="webDomain_is_wall" property="isWall" />
+		
+	</resultMap>
+
+	<sql id="Base_Column_List">
+		webDomain.id as webDomain_id,
+		webDomain.domain as webDomain_domain,
+		webDomain.status as
+		webDomain_status,
+		webDomain.user_id as webDomain_user_id,
+		webDomain.type as webDomain_type,
+		webDomain.create_date as
+		webDomain_create_date,
+		webDomain.is_wall as webDomain_is_wall
+	</sql>
+
+	<sql id="Base_Where_Sql">
+		<if test="id!=null"> and webDomain.id = #{id} </if>
+		<if test="domain!=null"> and webDomain.domain = #{domain} </if>
+		<if test="status!=null"> and webDomain.status = #{status} </if>
+		<if test="userId!=null"> and webDomain.user_id = #{userId} </if>
+		<if test="type!=null"> and webDomain.type = #{type} </if>
+		<if test="createDate!=null"> and webDomain.create_date = #{createDate} </if>
+		<if test="isWall!=null"> and webDomain.is_wall = #{isWall} </if>
+	</sql>
+
+	<select id="select" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from web_domain webDomain
+		<include refid="baseReadMapper.searchSql" />
+		<include refid="Base_Where_Sql" />
+		<include refid="baseReadMapper.orderSql" />
+	</select>
+
+	<select id="count" resultType="Integer">
+		select
+		count(id)
+		from web_domain webDomain
+		<include refid="baseReadMapper.searchSql" />
+		<include refid="Base_Where_Sql" />
+	</select>
+
+	<select id="sum" resultType="java.math.BigDecimal">
+		select
+		ifnull(sum(${sumItem}),0)
+		from web_domain webDomain
+		<include refid="baseReadMapper.searchSql" />
+		<include refid="Base_Where_Sql" />
+	</select>
+
+
+	<select id="finddeptlist" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from web_domain webDomain 
+		where user_id in (select id from user where depname=#{depname} )
+	</select>
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

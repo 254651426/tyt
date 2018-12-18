@@ -1,0 +1,335 @@
+package com.bquan.controller.phone;
+
+
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import java.util.UUID;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.bquan.bean.CommonpayConfig;
+import com.bquan.entity.mysql.Orders;
+import com.bquan.entity.mysql.Product;
+import com.bquan.entity.mysql.User;
+import com.bquan.entity.mysql.UserCoupon;
+import com.bquan.service.read.CommissionRateReadService;
+import com.bquan.service.read.CommissionReadService;
+import com.bquan.service.read.CouponReadService;
+import com.bquan.service.read.ProductReadService;
+import com.bquan.service.read.SendCodeReadService;
+import com.bquan.service.read.TipsReadService;
+import com.bquan.service.read.UserCouponReadService;
+import com.bquan.service.read.UserLineReadService;
+import com.bquan.service.read.UserReadService;
+import com.bquan.service.read.UserTokenReadService;
+import com.bquan.service.read.WebDomainReadService;
+import com.bquan.service.write.CommissionWriteService;
+import com.bquan.service.write.OrdersWriteService;
+import com.bquan.service.write.SendCodeWriteService;
+import com.bquan.service.write.UserCouponWriteService;
+import com.bquan.service.write.UserTokenWriteService;
+import com.bquan.service.write.UserWriteService;
+import com.bquan.service.write.OrdersWriteService.PayType;
+import com.bquan.util.AlipayAppUtil;
+import com.bquan.util.BigDecimalCalUtil;
+import com.bquan.util.DictionaryUtil;
+import com.bquan.util.Gettaijipay;
+import com.bquan.util.HttpClientUtil;
+import com.bquan.util.JsonUtil;
+import com.bquan.util.MD5Util;
+import com.bquan.util.MatrixToImageWriterUtil;
+import com.bquan.util.RequestUtils;
+import com.bquan.util.WeixinSignUtil;
+
+/**
+ * 使用手册（提示语）
+ * 
+ * @author hedaokun
+ * 
+ */
+@Controller
+@RequestMapping(value = "/phone/phonePay")
+public class PhonePayController extends BasePhoneController {
+
+	@Autowired
+	private UserLineReadService userLineReadService;
+	@Autowired
+	private ProductReadService productReadService;
+	@Autowired
+	private UserReadService userReadService;
+	@Autowired
+	private CouponReadService couponReadService;
+	@Autowired
+	private UserCouponReadService userCouponReadService;
+	@Autowired
+	private UserCouponWriteService userCouponWriteService;
+	@Autowired
+	private CommissionReadService commissionReadService;
+	@Autowired
+	private UserWriteService userWriteService;
+	@Autowired
+	private CommissionRateReadService commissionRateReadService;
+	@Autowired
+	private TipsReadService tipsReadService;
+	@Autowired
+	private WebDomainReadService webDomainReadService;
+	@Autowired
+	private SendCodeReadService sendCodeReadService;
+	@Autowired
+	private UserTokenReadService userTokenReadService;
+	@Autowired
+	private UserTokenWriteService userTokenWriteService;
+	@Autowired
+	private SendCodeWriteService sendCodeWriteService;
+	@Autowired
+	private CommissionWriteService commissionWriteService;
+	@Autowired
+	private OrdersWriteService ordersWriteService;
+
+	/**
+	 * 跳到扫码支付界面
+	 * 
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping(value = "/goPay")
+	@ResponseBody
+	public Map<String, Object> goPay(HttpServletRequest request, HttpServletResponse response) {
+		// 响应信息
+		Map<String, Object> responseMap = new HashMap<String, Object>();
+
+		/**
+		 * 获取参数
+		 */
+		String payWay = request.getParameter("payWay");// 获取支付方式
+		String userName = request.getParameter("userName");// 获取充值账户
+		String productSign = request.getParameter("productSign");// 获取产品标识
+		String count = request.getParameter("count");// 购买数量
+
+		ModelAndView mv = new ModelAndView();
+		String OrderId = MD5Util.MD5(UUID.randomUUID().toString());// 生成订单号
+
+		/**
+		 * 获取产品信息和参数校验
+		 */
+		Product pro = productReadService.getBySign(productSign);
+
+		// 验证产品标识
+		if (pro == null) {
+			responseMap.put("status", "fail");
+			responseMap.put("msg", "未查询到相关产品");
+			return responseMap;
+		}
+
+		/**
+		 * 创建订单
+		 */
+		Orders orders = new Orders();
+		orders.setUserId(userName);
+		orders.setProductSign(productSign);
+		orders.setProductName(pro.getName());
+		orders.setCount(Integer.parseInt(count));
+		orders.setCreateDate(new Date());
+		orders.setIsCallBack(false);
+
+		// 计算支付需要的总价钱
+		BigDecimal payPri = BigDecimalCalUtil.mul(BigDecimalCalUtil.mul(pro.getPrice(), new BigDecimal(100)),
+				new BigDecimal(count));
+		User u = userReadService.getUser(userName);
+		if (u == null) {
+			responseMap.put("status", "fail");
+			responseMap.put("msg", "账户不存在");
+			return responseMap;
+		}
+		UserCoupon userCoupon = null;
+		// 获取此订单可使用的优惠券
+		userCoupon = userCouponWriteService
+				.getAvailableUserCoupon(BigDecimalCalUtil.mul(pro.getPrice(), new BigDecimal(count)), u);
+		if (userCoupon != null) {
+			// 计算优惠后的价格
+			payPri = BigDecimalCalUtil.sub(payPri, BigDecimalCalUtil.mul(userCoupon.getPrice(), new BigDecimal(100)));
+			orders.setUserCouponId(userCoupon.getId());
+		}
+		// 设置订单价钱
+		orders.setProductPrice(BigDecimalCalUtil.div(payPri, new BigDecimal(100), 2));
+
+		String title = "影盾订单";
+		String content = "影盾订单";
+
+		if ("weixin".equals(payWay)) {
+			/**
+			 * 使用微信进行支付
+			 */
+			// responseMap = ordersWriteService.generateWeixinAppOrder(
+			// RequestUtils.getBasePath(request),
+			// RequestUtils.getIp(request),
+			// title, content,OrderId, payPri);
+			responseMap.put("status", "success");
+			responseMap.put("msg", "成功");
+			return responseMap;
+		} else if ("zhifubao".equals(payWay)) {
+			/**
+			 * 使用支付宝进行支付
+			 */
+			// String html = ordersWriteService.generateAlipayOrder(
+			// RequestUtils.getBasePath(request),
+			// RequestUtils.getIp(request),
+			// title, content, OrderId, payPri);
+			Map<String, String> resultMap = AlipayAppUtil.getOrderInfoByAliPay(
+					RequestUtils.getBasePath(request) + "/api/pay/aliCallBack", OrderId, payPri, title, content);
+			try {
+				/**
+				 * 保存订单
+				 */
+				orders.setPayCreateDate(new Date());
+				orders.setOrderStatus(0);
+				orders.setOrderId(OrderId);
+				ordersWriteService.insert(orders);
+
+				responseMap.put("status", "success");
+				responseMap.put("msg", "成功");
+				responseMap.put("alipayParams", resultMap);
+				return responseMap;
+			} catch (Exception e) {
+				responseMap.put("status", "fail");
+				responseMap.put("msg", "异常");
+				return responseMap;
+			}
+		} else {
+			responseMap.put("status", "fail");
+			responseMap.put("msg", "请选择支付方式");
+			return responseMap;
+		}
+	}
+
+	/**
+	 * 跳到太极支付界面
+	 * 
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/getpay", method = RequestMethod.POST)
+	public String getpay(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		Map<String, Object> responseMap = new HashMap<String, Object>();
+		/**
+		 * 获取参数
+		 */
+		String payWay = request.getParameter("payWay");// 获取支付方式
+		String userName = request.getParameter("username");// 获取充值账户
+		String productSign = request.getParameter("productSign");// 获取产品标识
+		String payPri = request.getParameter("payPri");// 总价
+		String OrderId = MD5Util.MD5(UUID.randomUUID().toString());// 生成订单号
+		String type = request.getParameter("type");//支付方式  0 支付宝/ 1微信
+
+		/**
+		 * 获取产品信息和参数校验
+		 */
+		Product pro = productReadService.getBySign(productSign);
+		// 验证产品标识
+		if (pro == null) {
+			responseMap.put("msg", "产品不存在");
+		    return output(response, JsonUtil.toJson(responseMap));
+		}
+
+		/**
+		 * 支付参数
+		 */
+		Map<String, String> m = new LinkedHashMap<String, String>();
+		String baseUrl = DictionaryUtil.getDictionaryValue("dictionary_base_url") + "/tyt";
+		CommonpayConfig c = new CommonpayConfig();
+		c.setVersion("1.0.0");
+		c.setMerchant_id("55166399");
+		c.setMerchant_order_id(OrderId);
+		c.setApp_id("0");
+		c.setCash(payPri);
+		c.setType(payWay);
+		c.setTrade_type("consumption");
+		c.setGoods_name(pro.getName());
+		c.setReturn_url("www.baidu.com");
+		c.setNotify_url("http://47.100.196.241:8080/tyt/phone/phonePay/aliCallBack");
+		c.setIp("47.100.196.241");
+		c.setFormat("json");
+		c.setSign_type("md5");
+		c.setStart_time(String.valueOf(new Date().getTime() / 1000));
+		c.setRandom_string("123456");
+		/**
+		 * 创建订单
+		 */
+		Orders orders = new Orders();
+		orders.setUserId(userName);
+		orders.setProductSign(productSign);
+		orders.setProductName(pro.getName());
+		orders.setCount(1);
+		orders.setCreateDate(new Date());
+		orders.setIsCallBack(false);
+		User u = userReadService.getUser(userName);
+		if (u == null) {
+			responseMap.put("msg", "账户不存在");
+			return output(response, JsonUtil.toJson(responseMap));
+		}
+		orders.setProductPrice(new BigDecimal(payPri));// 设置订单价钱
+		orders.setPayCreateDate(new Date());
+		orders.setOrderStatus(0);
+		orders.setOrderId(OrderId);
+		orders.setType(type);
+		ordersWriteService.insert(orders);
+		Gettaijipay g = new Gettaijipay();
+		String result = g.showpay(c);
+		return output(response, result);
+	}
+
+	/**
+	 * 支付宝支付服务器异步回调地址
+	 * 
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping(value = "/aliCallBack")
+	public String aliCallBack(HttpServletRequest request, HttpServletResponse response) {
+		try {
+			String status = request.getParameter("status");
+			String orderId = request.getParameter("merchant_order_id");
+			if (status.equals("2")) {
+				ordersWriteService.TaijiSuccessOrder(orderId);
+			}
+		} catch (
+
+		Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+}

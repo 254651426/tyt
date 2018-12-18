@@ -1,0 +1,744 @@
+package com.bquan.controller.web;
+
+import java.io.File;
+import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import java.util.UUID;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.bquan.bean.Pager;
+import com.bquan.entity.mysql.Commission;
+import com.bquan.entity.mysql.LeaveMessage;
+import com.bquan.entity.mysql.Orders;
+import com.bquan.entity.mysql.SendCode;
+import com.bquan.entity.mysql.User;
+import com.bquan.entity.mysql.UserLine;
+import com.bquan.entity.mysql.WebDomain;
+import com.bquan.service.read.CommissionRateReadService;
+import com.bquan.service.read.CommissionReadService;
+import com.bquan.service.read.LeaveMessageReadService;
+import com.bquan.service.read.OrdersReadService;
+import com.bquan.service.read.SendCodeReadService;
+import com.bquan.service.read.UserLineReadService;
+import com.bquan.service.read.UserReadService;
+import com.bquan.service.read.WebDomainReadService;
+import com.bquan.service.write.LeaveMessageWriteService;
+import com.bquan.service.write.SendCodeWriteService;
+import com.bquan.service.write.UserWriteService;
+import com.bquan.service.write.WebDomainWriteService;
+import com.bquan.util.Base64;
+import com.bquan.util.DateUtils;
+import com.bquan.util.JsonUtil;
+import com.bquan.util.MD5Util;
+import com.bquan.util.MailUtil;
+import com.bquan.util.MatrixToImageWriterUtil;
+import com.bquan.util.RandomCodeUtil;
+import com.bquan.util.SendCloudUtil;
+import com.bquan.util.StringUtil;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.EncodeHintType;
+import com.google.zxing.MultiFormatWriter;
+import com.google.zxing.common.BitMatrix;
+
+/**
+ * 网站Controller
+ * @author ThinkGem
+ * @version 2013-5-29
+ */
+@Controller
+@RequestMapping(value = "/web/user")
+public class WebUserController extends BaseWebController{
+	
+	@Autowired
+	private UserReadService userReadService;
+	@Autowired
+	private SendCodeReadService sendCodeReadService;
+	@Autowired
+	private UserWriteService userWriteService;
+	@Autowired
+	private SendCodeWriteService sendCodeWriteService;
+	@Autowired
+	private LeaveMessageWriteService leaveMessageWriteService;
+	@Autowired
+	private LeaveMessageReadService leaveMessageReadService;
+	@Autowired
+    private WebDomainWriteService webDomainWriteService;
+    @Autowired
+    private WebDomainReadService webDomainReadService;
+    @Autowired
+    private CommissionReadService commissionReadService;
+    @Autowired
+    private CommissionRateReadService commissionRateReadService;
+    @Autowired
+    private UserLineReadService userLineReadService;
+    @Autowired
+    private OrdersReadService ordersReadService;
+	
+	
+	@RequestMapping(value = "/goLogin")
+	public String goLogin(){
+		return "web/login.jsp";
+	}
+	
+	public static void main(String[] args) {
+		System.out.println(UUID.randomUUID().toString());
+	}
+	
+	@RequestMapping(value = "/logout")
+	public String logout(
+			Model model,
+			HttpServletRequest request, 
+			HttpServletResponse response){
+		model.addAttribute("menu", "index");
+		request.getSession().removeAttribute("user");
+		return "web/index.jsp";
+	}
+	
+	@RequestMapping(value = "/login")
+	public String login(
+			Model model,
+			HttpServletRequest request, 
+			HttpServletResponse response) {
+		
+		String username = request.getParameter("username");
+		String password = request.getParameter("password");
+		String url = request.getParameter("url");
+		
+		// 未登陆跳登陆页面
+		if(StringUtils.isEmpty(username)
+				||StringUtils.isEmpty(password)){
+			model.addAttribute("msg", "账号和密码不能为空");
+			return "web/login.jsp";
+		}
+		
+		User user = userReadService.getUser(username);
+		if(user==null){
+			model.addAttribute("msg", "用户不存在");
+			return "web/login.jsp";
+		}
+		
+		if(!user.getPassword().equals(
+				MD5Util.MD5Encode(password, "utf-8"))){
+			model.addAttribute("msg", "密码错误");
+			return "web/login.jsp";
+		}
+		
+		model.addAttribute("menu", "user");
+		model.addAttribute("user", user);
+		request.getSession().setAttribute("user", user);
+		if(StringUtils.isNotEmpty(url)){
+			return "redirect:"+url+".html";
+		}
+		System.out.println(url);
+		return "redirect:/web/user/user.html";
+	}
+	
+	@RequestMapping(value = "/register")
+	public String register(Model model,
+			HttpServletRequest request, 
+			HttpServletResponse response,
+			HttpSession httpSession) {
+		String code=request.getParameter("code");
+		if(StringUtils.isNotEmpty(code)){
+			httpSession.setAttribute("fmcode", code);
+		}
+		model.addAttribute("menu", "user");
+		return "web/register.jsp";
+	}
+	
+	@RequestMapping(value = "/checkIp")
+	@ResponseBody
+    public Map<String,Object> checkIp(
+    		HttpServletRequest request, 
+    		HttpServletResponse response){
+    	Map<String,Object> responseMap = new HashMap<String,Object>();
+    	responseMap.put("status", true);
+    	String registerIp = getIp(request);
+	    if(StringUtils.isNotEmpty(registerIp)){
+	    	Map<String,Object> ipMap = new HashMap<String,Object>();
+		    ipMap.put("ip", getIp(request));
+		    List<User> ipUser = userReadService.getTargetList(ipMap);
+		    if(ipUser!=null&&ipUser.size()>5){
+		    	responseMap.put("status", false);
+		    	responseMap.put("msg", "系统检测您的ip频繁注册，判定为恶意注册，此账号将不赠送VIP时长！如果你认为此判断有误，请联系我们的客服人员！");
+		    }
+	    }
+	    return responseMap;
+    }
+	
+	@RequestMapping(value = "/registerSave")
+	public String registerSave(Model model,
+			HttpServletRequest request, 
+			HttpServletResponse response,
+			HttpSession httpSession) {
+		
+   	    try{
+   	    	/**
+   	    	 * 请求需要的参数
+   	    	 */
+   		    String username=request.getParameter("username").trim();
+   		    String password=request.getParameter("password");
+   		    String code=request.getParameter("code");// 验证码
+   		    
+   		    String fmcode=httpSession.getAttribute("fmcode")==null?"":httpSession.getAttribute("fmcode").toString();
+   		    
+//   		    /**
+//   		     * 参数的校验
+//   		     */
+//   		    if(StringUtils.isEmpty(code)){
+//   		    	model.addAttribute("msg", "验证码不能为空");
+//   		    	return "modules/web/register";
+//   		    }
+//               
+//           Map<String,Object> map = new HashMap<String,Object>();
+//           map.put("username", username);
+//           map.put("orderBy", "send_time");
+//           map.put("orderDesc", "desc");
+//           List<SendCode> codeList = 
+//           		sendCodeReadService.getTargetList(map);
+//           if(codeList.size()==0){
+//        	   model.addAttribute("msg", "未获取验证码");
+//        	   return "modules/web/register";
+//           }
+//               
+//           // 检验验证码是否过期
+//           SendCode sendCode = codeList.get(0);
+//           if((new Date().getTime()-sendCode.getSendTime().getTime())
+//           		>60*60*1000){
+//        	   model.addAttribute("msg", "验证码已过期，请重新获取！");
+//        	   return "modules/web/register";
+//           }
+//               
+//           // 未查询到验证码或者验证码不匹配
+//           if(codeList.size()==0||
+//           		!(code.equals(codeList.get(0).getCode()))){
+//    	    	model.addAttribute("msg", "验证码错误！");
+//     	   		return "modules/web/register";
+//           }
+               
+           // 查询用户
+           User u = userReadService.getUser(username);
+           if(u!=null){
+           		model.addAttribute("msg", "该账户已被注册！");
+     	   		return "web/register.jsp";
+           }
+               
+       	   // 生成分享码
+       	   String share_code = userReadService.getRandomCode();
+       	   
+	       Calendar cal = Calendar.getInstance();
+           	
+           	/**
+           	 * 保存用户
+           	 */
+           	User usr = new User();
+           	usr.setShareCode(share_code);
+           	usr.setUsername(username);
+           	usr.setPassword(MD5Util.MD5(MD5Util.MD5(password)));
+           	usr.setStatus(true);
+           	usr.setIsBlack(true);
+           	usr.setCreateDate(new Date());
+           	usr.setUserSource(true);
+           	usr.setLevel("5");// 设置等级为普通用户
+           	usr.setLeftCount(0);
+           	usr.setVipEndTime(cal.getTime());
+           	usr.setSendDate(null);
+           	usr.setIsVipSend(false);		// 标记佣金未赠送
+           	usr.setIsRegisterSend(false);  	// 此字段暂时无任何意义
+           	usr.setFmcode(fmcode);			// 邀请码，购买vip后，会给此用户赠送佣金
+           	usr.setIp(getIp(request));
+           	usr.setLoginDate(new Date());
+           	usr.setVersion("");
+           	// 赠送10分钟（false代表未赠送10分钟，首次登陆的时候会赠送）
+           	usr.setIsEmailSend(true);
+           	
+           	// 判断是否为恶意注册的用户
+           	String registerIp = getIp(request);
+    	    if(StringUtils.isNotEmpty(registerIp)){
+    	    	Map<String,Object> ipMap = new HashMap<String,Object>();
+    		    ipMap.put("ip", getIp(request));
+    		    List<User> ipUser = userReadService.getTargetList(ipMap);
+    		    if(ipUser!=null&&ipUser.size()>5){
+    		    	usr.setSendDate(cal.getTime());
+    		    }
+    	    }
+           	
+           	userWriteService.insert(usr);
+           	
+    		model.addAttribute("menu", "user");
+    		model.addAttribute("user", usr);
+    		request.getSession().setAttribute("user", usr);
+    		return "redirect:/web/user/user.html";
+   	    }catch(Exception e){
+   	    	e.printStackTrace();
+   	    	model.addAttribute("msg", "注册失败");
+   			model.addAttribute("menu", "user");
+   			return "web/register.jsp";
+   	    }
+	}
+	
+	@RequestMapping(value = "/forget")
+	public String forget(Model model) {
+		model.addAttribute("menu", "user");
+		return "web/forget.jsp";
+	}
+	
+	@RequestMapping(value = "/user")
+	public String user(
+			Model model,
+			HttpServletRequest request, 
+			HttpServletResponse response) {
+		
+		// 未登陆跳登陆页面
+		if(request.getSession().getAttribute("user")==null){
+			return "web/login.jsp";
+		}
+		
+		// 获取登陆用户并且刷新session信息
+		User user = 
+				userReadService.getUser(
+						((User) request.getSession().getAttribute("user"))
+						.getUsername()
+						);
+		request.getSession().setAttribute("user", user);		
+		
+		/**
+		 * 查询并生成手机端二维码
+		 */
+		if("3".equals(user.getLevel())
+				|| "4".equals(user.getLevel())
+				|| "6".equals(user.getLevel())){
+			Map<String,Object> userLineMap = new HashMap<String,Object>();
+			userLineMap.put("orderBy", "level");
+			userLineMap.put("orderDesc", "asc");
+			userLineMap.put("status", "1");
+			List<UserLine> userLineList = userLineReadService.getTargetList(userLineMap);
+			
+			if(userLineList!=null && userLineList.size()>0){
+				for(UserLine ul:userLineList){
+					try {
+						UUID uuid = UUID.randomUUID();
+						//UserLine ul = userLineList.get(0);
+						String str = "ss://"+Base64.encode(
+								(ul.getEncryptionMode()+":"+user.getShadowsocksPassword()+
+										"@"+ul.getUserIp()+":"+user.getShadowsocksPort()).getBytes());
+						String format = "png";   //生成的图片的格式
+					    Hashtable hints= new Hashtable();   
+					    hints.put(EncodeHintType.CHARACTER_SET, "utf-8");   
+					    BitMatrix bitMatrix = new MultiFormatWriter().encode(str, BarcodeFormat.QR_CODE, 300, 300,hints);  
+					    File outputFile = new File(request.getRealPath("/statics")+File.separator+uuid.toString()+".png");   
+					    MatrixToImageWriterUtil.writeToFile(bitMatrix, format, outputFile);
+					    
+					    ul.setImgUrl("/statics/"+uuid.toString()+".png");
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					
+				}
+				
+			}else{
+				userLineList = new ArrayList<UserLine>();
+			}
+			model.addAttribute("userLineList",userLineList);
+		}else{
+			model.addAttribute("userLineList",new ArrayList<UserLine>());
+		}
+		
+		int sendRate = commissionRateReadService.getShowRate(user.getUsername());
+		
+		model.addAttribute("sendRate",sendRate);
+		model.addAttribute("userMessage",user);
+		
+		model.addAttribute("module", request.getSession().getAttribute("module"));
+		request.getSession().removeAttribute("module");
+		model.addAttribute("menu", "user");
+		return "web/user.jsp";
+	}
+	
+	/**
+	 * 查询推广注册用户
+	 * @param request
+	 * @param response
+	 * @param pager
+	 * @return
+	 */
+	@RequestMapping(value = "/ajaxRegUser")
+	@ResponseBody
+	public Map<String,Object> ajaxRegUser(
+			HttpServletRequest request, 
+			HttpServletResponse response,
+			@RequestBody Pager pager) {
+		
+		SimpleDateFormat sf_date = new SimpleDateFormat("yyyy-MM-dd");
+		SimpleDateFormat sf = new SimpleDateFormat("yyyy年MM月");
+		
+		User user = 
+				userReadService.getUser(
+						((User) request.getSession().getAttribute("user"))
+						.getUsername()
+						);
+		
+		Calendar now = Calendar.getInstance();
+		Map<String,Object> registerUserMap = 
+				new HashMap<String,Object>();
+		registerUserMap.put("fmcode", user.getShareCode());
+		registerUserMap.put("timeBy", "create_date");
+//		if(pager.getBeginDate()!=null){
+//			registerUserMap.put("beginDate", sf_date.format(pager.getBeginDate().getTime())+" 00:00:00");
+//		}
+//		if(pager.getEndDate()!=null){
+//			registerUserMap.put("endDate", sf_date.format(pager.getEndDate().getTime())+" 23:59:59");
+//		}
+		registerUserMap.put("beginDate", sf_date.format(now.getTime())+" 00:00:00");
+		registerUserMap.put("endDate", sf_date.format(now.getTime())+" 23:59:59");
+		//Pager pager = new Pager();
+		pager = userReadService.findPager(pager, registerUserMap);
+		for(User us : (List<User>)pager.getResult()){
+			us.setUsername(StringUtil.hideString(us.getUsername()));
+		}
+		
+		Map<String,Object> responseMap = new HashMap<String,Object>();
+		responseMap.put("page", pager);
+		return responseMap;
+	}
+	
+	/**
+	 * 查询科学列表
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping(value = "/ajaxUserDomain")
+	@ResponseBody
+	public Map<String,Object> ajaxUserDomain(
+			HttpServletRequest request, 
+			HttpServletResponse response) {
+		User user = 
+				userReadService.getUser(
+						((User) request.getSession().getAttribute("user"))
+						.getUsername()
+						);
+		
+		// 查询用户的科学列表
+		Map<String,Object> querySystemMap = new HashMap<String,Object>();
+		Map<String,Object> queryUserMap = new HashMap<String,Object>();
+		
+		querySystemMap.put("type", 1);
+		querySystemMap.put("isWall", "0");
+		
+		queryUserMap.put("type", 0);
+		queryUserMap.put("isWall", "0");
+		queryUserMap.put("userId", user.getId());
+		
+		List<WebDomain> systemList = 
+       		 webDomainReadService.getTargetList(querySystemMap);
+		List<WebDomain> userList = 
+	       		 webDomainReadService.getTargetList(queryUserMap);
+		
+		Map<String,Object> responseMap = new HashMap<String,Object>();
+		responseMap.put("list1", userList);
+		responseMap.put("list2", systemList);
+		return responseMap;
+	}
+	
+	/**
+	 * 查询留言
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping(value = "/ajaxLeaveMessage")
+	@ResponseBody
+	public Map<String,Object> ajaxLeaveMessage(
+			HttpServletRequest request, 
+			HttpServletResponse response) {
+		User user = 
+				userReadService.getUser(
+						((User) request.getSession().getAttribute("user"))
+						.getUsername()
+						);
+		Map<String,Object> responseMap = new HashMap<String,Object>();
+		// 查询留言信息
+		Map<String,Object> map = new HashMap<String,Object>();
+		map.put("userId", user.getId());
+		List<LeaveMessage> leaveMessageList = 
+				leaveMessageReadService.findPage(1, 20, map).getList();
+		responseMap.put("leaveMessageList", 
+				leaveMessageReadService.convertData(leaveMessageList));
+		return responseMap;
+	}
+	
+	/**
+	 * 查询佣金信息
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping(value = "/ajaxCommission")
+	@ResponseBody
+	public Map<String,Object> ajaxCommission(
+			HttpServletRequest request, 
+			HttpServletResponse response,
+			@RequestBody Pager pager) {
+		Map<String,Object> responseMap = new HashMap<String,Object>();
+		User user = 
+				userReadService.getUser(
+						((User) request.getSession().getAttribute("user"))
+						.getUsername()
+						);
+		
+		Map<String,Object> map = new HashMap<String,Object>();
+		map.put("inviteUsername", user.getUsername());
+		map.put("isSend", true);
+		map.put("orderBy", "commission.create_date");
+		map.put("orderDesc", "desc");
+		pager = commissionReadService.findPager(pager, map);
+		responseMap.put("pager", pager);
+		
+		// 将用户名的中间部分转成成***
+		for(Commission cm : (List<Commission>)pager.getResult()){
+			System.out.println(cm.getUsername());
+			Map<String,Object> orderMap = new HashMap<String,Object>();
+			orderMap.put("userId", cm.getUsername());
+			orderMap.put("orderStatus", 2);
+			List<Orders> ordersList = ordersReadService.getTargetList(orderMap);
+			System.out.println(ordersList.size());
+			if(ordersList.size()>1){
+				cm.setIsSend(true);
+			}else{
+				cm.setIsSend(false);
+			}
+			cm.setUsername(StringUtil.hideString(cm.getUsername()));
+		}
+		
+		SimpleDateFormat sf_date = new SimpleDateFormat("yyyy-MM-dd");
+		Date d = null;
+		try {
+			String qTime = request.getParameter("queryTime");
+			if(StringUtils.isEmpty(qTime)){
+				d = new Date();
+			}else{
+				d = sf_date.parse(qTime);
+			}
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(d);
+		calendar.set(
+				calendar.get(Calendar.YEAR), 
+				calendar.get(Calendar.MONTH),
+				calendar.get(Calendar.DAY_OF_MONTH), 0, 0, 0);
+		Date beginD = calendar.getTime();
+		calendar.set(
+				calendar.get(Calendar.YEAR), 
+				calendar.get(Calendar.MONTH),
+				calendar.get(Calendar.DAY_OF_MONTH), 23, 59, 59);
+		Date endD = calendar.getTime();
+		
+		System.out.println(sf_date.format(DateUtils.getFirstDayOfMonth(calendar).getTime()));
+		System.out.println(sf_date.format(DateUtils.getLastDayOfMonth(calendar).getTime()));
+		
+		int monthSum = commissionReadService.getSumCommission(
+				user.getUsername(), 
+				DateUtils.getFirstDayOfMonth(calendar).getTime(), 
+				DateUtils.getLastDayOfMonth(calendar).getTime());
+		
+		calendar.set(Calendar.MONTH, calendar.get(Calendar.MONTH)-1);
+		
+		System.out.println(sf_date.format(DateUtils.getFirstDayOfMonth(calendar).getTime()));
+		System.out.println(sf_date.format(DateUtils.getLastDayOfMonth(calendar).getTime()));
+		
+		calendar.set(
+				calendar.get(Calendar.YEAR), 
+				calendar.get(Calendar.MONTH),
+				calendar.get(Calendar.DAY_OF_MONTH), 0, 0, 0);
+		Date preBeginD = calendar.getTime();
+		calendar.set(
+				calendar.get(Calendar.YEAR), 
+				calendar.get(Calendar.MONTH),
+				calendar.get(Calendar.DAY_OF_MONTH), 23, 59, 59);
+		Date preEndD = calendar.getTime();
+		
+		SimpleDateFormat sf = new SimpleDateFormat("yyyy年MM月");
+		responseMap.put("dateTime", sf.format(calendar.getTime()));
+		
+		int preMonthSum = commissionReadService.getSumCommission(
+				user.getUsername(), 
+				DateUtils.getFirstDayOfMonth(calendar).getTime(), 
+				DateUtils.getLastDayOfMonth(calendar).getTime());
+		
+		System.out.println(sf_date.format(DateUtils.getFirstDayOfMonth(calendar).getTime()));
+		System.out.println(sf_date.format(DateUtils.getLastDayOfMonth(calendar).getTime()));
+		
+		int todaySend = commissionReadService.getSumCommission(user.getUsername(), beginD, endD);
+		int preSend = commissionReadService.getSumCommission(user.getUsername(), preBeginD, preEndD);
+		
+		int sendRate = commissionRateReadService.getShowRate(user.getUsername());
+		
+		
+		responseMap.put("sunSendMoney", (monthSum*sendRate)/100);
+		responseMap.put("sunPreSendMoney", (preMonthSum*sendRate)/100);
+		
+		responseMap.put("todayCommission",(todaySend*sendRate)/100);
+		responseMap.put("preCommission",(preSend*sendRate)/100);
+		
+		return responseMap;
+	}
+	
+	/**
+	 * 找回密码
+	 * @param username
+	 * @return
+	 */
+	@RequestMapping(value ="/changepassword")
+    public String changepassword(
+    		Model model,
+    		HttpServletRequest request, 
+			HttpServletResponse response){
+		
+		String username = request.getParameter("username");
+		String code = request.getParameter("code");
+		String password = request.getParameter("password");
+		String repassword = request.getParameter("repassword");
+		
+    	if(StringUtils.isEmpty(username)){
+    		model.addAttribute("msg", "账号不能为空");
+        	return "web/forget.jsp";
+    	}
+    	if(StringUtils.isEmpty(code)){
+    	    model.addAttribute("msg", "邮箱验证码不能为空！");
+        	return "web/forget.jsp";
+        }
+        
+        Map<String,Object> map = new HashMap<String,Object>();
+        map.put("username", username);
+        map.put("orderBy", "sendCode.send_time");
+        map.put("orderDesc", "desc");
+        List<SendCode> codeList = sendCodeReadService.getTargetList(map);
+        
+        if(codeList.size()==0){
+    	    model.addAttribute("msg", "验证码错误！");
+        	return "web/forget.jsp";
+        }
+        
+        // 检验验证码是否过期
+        SendCode sendCode = codeList.get(0);
+        if((new Date().getTime()-sendCode.getSendTime().getTime())>60*60*1000){
+    	    model.addAttribute("msg", "验证码已过期，请重新获取！");
+        	return "web/forget.jsp";
+        }
+        
+        // 未查询到验证码或者验证码不匹配
+        if(!(code.equals(codeList.get(0).getCode()))){
+    	    model.addAttribute("msg", "验证码错误！");
+        	return "web/forget.jsp";
+        }
+        
+        if(StringUtils.isEmpty(password)
+        		||StringUtils.isEmpty(repassword)){
+    	    model.addAttribute("msg", "密码为空！");
+        	return "web/forget.jsp";
+        }
+        
+        if(!password.equals(repassword)){
+    	    model.addAttribute("msg", "密码和确认密码不一致！");
+        	return "web/forget.jsp";
+        }
+    	
+        // 查询用户
+        User user = userReadService.getUser(username);
+        if(user==null){
+    	    model.addAttribute("msg", "账号不存在！");
+        	return "web/forget.jsp";
+        }
+        
+        user.setPassword(MD5Util.MD5(MD5Util.MD5(password)));
+        userWriteService.update(user);
+        
+    	model.addAttribute("msg", "密码修改成功，请通过新密码登录！");
+    	return "web/login.jsp";
+    	
+    }
+	
+	/**
+     * 获取验证码
+     * @param username	用户名
+     * @param type		操作类型 0代表注册，1代表找回密码
+     * @return
+     */
+	@RequestMapping(value = "/getCode")
+    public String getpasscode(
+    		@RequestParam(value="username",defaultValue="")String username,
+    		@RequestParam(value="type",defaultValue="")String type,
+    		HttpServletRequest request, 
+			HttpServletResponse response){
+    	Map<String,Object> responseMap = 
+    			new HashMap<String,Object>();
+    	if(StringUtils.isEmpty(username)){
+        	responseMap.put("status", "false");
+        	responseMap.put("msg", "账号不能为空");
+        	return output(response,JsonUtil.toJson(responseMap));
+    	}
+    	String code = RandomCodeUtil.getNumberRandomCode(6);
+    	boolean flag = false;
+    	System.out.println(type);
+    	System.out.println(username);
+    	User user = userReadService.getUser(username);
+    	if(type.equals("0")){
+    		if(user!=null){
+            	responseMap.put("status", "false");
+            	responseMap.put("msg", "该邮箱地址已注册，请更换邮箱!");
+            	return output(response,JsonUtil.toJson(responseMap));
+    		}
+    	}else{
+    		if(user==null){
+            	responseMap.put("status", "false");
+            	responseMap.put("msg", "用户不存在!");
+            	return output(response,JsonUtil.toJson(responseMap));
+    		}
+    	}
+    	flag = MailUtil.sendMail("影盾验证码", "您的影盾验证码为："+code, username);
+    	if(flag){
+    		SendCode sendCode = new SendCode();
+    		sendCode.setCode(code);
+    		sendCode.setIsExpired(1);
+    		sendCode.setSendTime(new Date());
+    		sendCode.setUsername(username);
+    		sendCode.setCreateDate(new Date());
+    		sendCode.setModifyDate(new Date());
+    		sendCodeWriteService.insert(sendCode);
+        	responseMap.put("status", "success");
+        	responseMap.put("msg", "验证码发送成功，请登录邮箱查收!");
+        	return output(response,JsonUtil.toJson(responseMap));
+    	}else{
+        	responseMap.put("status", "false");
+        	responseMap.put("msg", "验证码发送失败,请稍后重试");
+        	return output(response,JsonUtil.toJson(responseMap));
+    	}
+    }
+	
+}

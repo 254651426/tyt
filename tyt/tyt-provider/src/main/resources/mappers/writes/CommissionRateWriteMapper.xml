@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bquan.dao.write.CommissionRateWriteMapper" >
+  
+  <delete id="delete" parameterType="com.bquan.entity.mysql.CommissionRate" >
+  	<if test="id!=null">
+	  	delete from 
+			ct_commission_rate
+	    where 
+	    	id = #{id}
+  	</if>
+  </delete>
+  
+  <insert id="insert" parameterType="com.bquan.entity.mysql.CommissionRate" >
+		INSERT INTO ct_commission_rate (
+    		id
+            ,create_date
+            ,modify_date
+            ,username
+            ,write_rate
+            ,show_rate
+            ,limit_send_time
+		)
+		VALUES
+		(
+			#{id}
+            ,#{createDate}
+            ,#{modifyDate}
+            ,#{username}
+            ,#{writeRate}
+            ,#{showRate}
+            ,#{limitSendTime}
+		)
+	</insert>
+	
+	<update id="update" parameterType="com.bquan.entity.mysql.CommissionRate">
+		UPDATE ct_commission_rate
+		<set>
+			<if test="id!= null">id = #{id}</if>
+            <if test="createDate!= null">,create_date = #{createDate}</if>
+            <if test="modifyDate!= null">,modify_date = #{modifyDate}</if>
+            <if test="username!= null">,username = #{username}</if>
+            <if test="writeRate!= null">,write_rate = #{writeRate}</if>
+            <if test="showRate!= null">,show_rate = #{showRate}</if>
+            <if test="limitSendTime!= null">,limit_send_time = #{limitSendTime}</if>
+		</set>
+		WHERE id = #{id}
+	</update>
+	
+</mapper>
+

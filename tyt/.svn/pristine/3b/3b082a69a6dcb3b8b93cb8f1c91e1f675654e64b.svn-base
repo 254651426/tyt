@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bquan.dao.read.TipsReadMapper" >
+  <resultMap id="BaseResultMap" type="com.bquan.entity.mysql.Tips" >
+    	<result column="tips_id" property="id" />
+    	<result column="tips_content" property="content" />
+    	<result column="tips_is_expired" property="isExpired" />
+    	<result column="tips_url" property="url" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+		tips.id as tips_id,
+		tips.content as tips_content,
+		tips.is_expired as tips_is_expired,
+		tips.url as tips_url
+  </sql>
+  
+  <sql id="Base_Where_Sql" >
+  	<if test="id!=null"> and tips.id = #{id} </if>
+  	<if test="content!=null"> and tips.content = #{content} </if>
+  	<if test="isExpired!=null"> and tips.is_expired = #{isExpired} </if>
+  	<if test="url!=null"> and tips.url = #{url} </if>
+  </sql>
+  
+  <select id="select" resultMap="BaseResultMap"  >
+    select 
+    <include refid="Base_Column_List" />
+    from tips tips
+    <include refid="baseReadMapper.searchSql" />
+    <include refid="Base_Where_Sql" />
+    <include refid="baseReadMapper.orderSql" />
+  </select>
+  
+  <select id="count" resultType="Integer"  >
+    select 
+    	count(id)
+    from tips tips
+    <include refid="baseReadMapper.searchSql" />
+    <include refid="Base_Where_Sql" />
+  </select>
+  
+  <select id="sum" resultType="java.math.BigDecimal"  >
+    select 
+    	ifnull(sum(${sumItem}),0) 
+    from tips tips
+    <include refid="baseReadMapper.searchSql" />
+    <include refid="Base_Where_Sql" />
+  </select>
+  
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bquan.dao.write.NumbersWriteMapper" >
+  
+  <delete id="delete" parameterType="com.bquan.entity.mysql.Numbers" >
+  	<if test="id!=null">
+	  	delete from 
+			ct_numbers
+	    where 
+	    	id = #{id}
+  	</if>
+  </delete>
+  
+  <delete id="deleteBatch">
+	delete from ct_numbers where id in 
+	<foreach item="id" collection="array" open="(" separator="," close=")">
+		#{id}
+	</foreach>
+  </delete>
+  
+  <insert id="insert" parameterType="com.bquan.entity.mysql.Numbers" >
+		INSERT INTO ct_numbers (
+    		id
+            ,number
+            ,isuser
+            ,create_date
+            ,modify_date
+		)
+		VALUES
+		(
+			#{id}
+            ,#{number}
+            ,#{isuser}
+            ,#{createDate}
+            ,#{modifyDate}
+		)
+	</insert>
+	
+	<update id="update" parameterType="com.bquan.entity.mysql.Numbers">
+		UPDATE ct_numbers
+		<set>
+			<if test="id!= null">id = #{id}</if>
+            <if test="number!= null">,number = #{number}</if>
+            <if test="isuser!= null">,isuser = #{isuser}</if>
+            <if test="createDate!= null">,create_date = #{createDate}</if>
+            <if test="modifyDate!= null">,modify_date = #{modifyDate}</if>
+		</set>
+		WHERE id = #{id}
+	</update>
+	
+</mapper>
+

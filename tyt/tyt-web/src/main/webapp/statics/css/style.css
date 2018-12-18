@@ -1,0 +1,9 @@
+/* Styles go here */
+
+.container {
+    padding-top: 10px;
+}
+
+.pagination {
+    display: flex;
+}

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>控制台</title>
+<#include "header.html" />
+</head>
+<body>
+欢迎登录天眼通管理系统
+<div id="mainApp" v-cloak>
+
+<@shiroPermission role="sys:orders:statistics" >
+<li>
+今日收入：{{dayPay}}
+</li>
+<li>
+本月收入：{{monthPay}}
+</li>
+<li>
+今年收入：{{yearPay}}
+</li>
+<li>
+今日新增用户：{{newUser}}
+</li>
+<li v-for="user in userList">
+      {{ user.fmcode }}---{{user.leftCount}}
+</li>
+</@shiroPermission>
+
+</div>
+</body>
+<script src="${rc.contextPath}/js/sys/main.js?t=${.now?long}"></script>
+</html>

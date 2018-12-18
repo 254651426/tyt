@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bquan.dao.read.OrdersReadMapper" >
+  <resultMap id="BaseResultMap" type="com.bquan.entity.mysql.Orders" >
+    	<result column="orders_id" property="id" />
+    	<result column="orders_product_name" property="productName" />
+    	<result column="orders_product_price" property="productPrice" />
+    	<result column="orders_product_sign" property="productSign" />
+    	<result column="orders_order_id" property="orderId" />
+    	<result column="orders_user_id" property="userId" />
+    	<result column="orders_create_date" property="createDate" />
+    	<result column="orders_pay_create_date" property="payCreateDate" />
+    	<result column="orders_pay_date" property="payDate" />
+    	<result column="orders_order_status" property="orderStatus" />
+    	<result column="orders_pre_pay_order_id" property="prePayOrderId" />
+    	<result column="orders_weixin_order_id" property="weixinOrderId" />
+    	<result column="orders_ali_order_id" property="aliOrderId" />
+    	<result column="orders_user_coupon_id" property="userCouponId" />
+    	<result column="orders_count" property="count" />
+    	<result column="orders_modify_date" property="modifyDate" />
+    	<result column="orders_is_call_back" property="isCallBack" />
+    	<result column="orders_type" property="type" />
+    	<association resultMap="com.bquan.dao.read.UserReadMapper.BaseResultMap"  property="user"></association>
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+		orders.id as orders_id,
+		orders.product_name as orders_product_name,
+		orders.product_price as orders_product_price,
+		orders.product_sign as orders_product_sign,
+		orders.order_id as orders_order_id,
+		orders.user_id as orders_user_id,
+		orders.create_date as orders_create_date,
+		orders.pay_create_date as orders_pay_create_date,
+		orders.pay_date as orders_pay_date,
+		orders.order_status as orders_order_status,
+		orders.pre_pay_order_id as orders_pre_pay_order_id,
+		orders.weixin_order_id as orders_weixin_order_id,
+		orders.ali_order_id as orders_ali_order_id,
+		orders.user_coupon_id as orders_user_coupon_id,
+		orders.count as orders_count,
+		orders.modify_date as orders_modify_date,
+		orders.is_call_back as orders_is_call_back,
+		orders.type as orders_type
+  </sql>
+  
+  <sql id="Base_Where_Sql" >
+  	<if test="id!=null"> and orders.id = #{id} </if>
+  	<if test="productName!=null"> and orders.product_name = #{productName} </if>
+  	<if test="productPrice!=null"> and orders.product_price = #{productPrice} </if>
+  	<if test="productSign!=null"> and orders.product_sign = #{productSign} </if>
+  	<if test="orderId!=null"> and orders.order_id = #{orderId} </if>
+  	<if test="userId!=null"> and orders.user_id = #{userId} </if>
+  	<if test="createDate!=null"> and orders.create_date = #{createDate} </if>
+  	<if test="payCreateDate!=null"> and orders.pay_create_date = #{payCreateDate} </if>
+  	<if test="payDate!=null"> and orders.pay_date = #{payDate} </if>
+  	<if test="orderStatus!=null"> and orders.order_status = #{orderStatus} </if>
+  	<if test="prePayOrderId!=null"> and orders.pre_pay_order_id = #{prePayOrderId} </if>
+  	<if test="weixinOrderId!=null"> and orders.weixin_order_id = #{weixinOrderId} </if>
+  	<if test="aliOrderId!=null"> and orders.ali_order_id = #{aliOrderId} </if>
+  	<if test="userCouponId!=null"> and orders.user_coupon_id = #{userCouponId} </if>
+  	<if test="count!=null"> and orders.count = #{count} </if>
+  	<if test="modifyDate!=null"> and orders.modify_date = #{modifyDate} </if>
+  	<if test="isCallBack!=null"> and orders.is_call_back = #{isCallBack} </if>
+  	<if test="type!=null"> and orders.type = #{type} </if>
+  </sql>
+  
+  <select id="select" resultMap="BaseResultMap"  >
+    select 
+    <include refid="Base_Column_List" />
+    
+    from orders orders
+    
+    <include refid="baseReadMapper.searchSql" />
+    <include refid="Base_Where_Sql" />
+    <include refid="baseReadMapper.orderSql" />
+  </select>
+  
+  <select id="count" resultType="Integer"  >
+    select 
+    	count(id)
+    from orders orders
+    <include refid="baseReadMapper.searchSql" />
+    <include refid="Base_Where_Sql" />
+  </select>
+  
+  <select id="sum" resultType="java.math.BigDecimal"  >
+    select 
+    	ifnull(sum(${sumItem}),0)
+    from orders orders
+    <include refid="baseReadMapper.searchSql" />
+    <include refid="Base_Where_Sql" />
+  </select>
+  
+  <select id="sumRealCommissionPrice" resultType="java.math.BigDecimal"  >
+    select 
+    	ifnull(sum(o.product_price),0)
+    from orders o
+    left join user as u on o.user_id = u.username
+    where u.fmcode = #{fmcode} and o.order_status = 2 and o.pay_date between #{beginDate} and #{endDate}
+  </select>
+  
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

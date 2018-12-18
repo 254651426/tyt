@@ -1,0 +1,154 @@
+package com.bquan.entity.mysql;
+
+import java.io.Serializable;
+import java.util.Date;
+
+/**
+ * 节点线路 Entity
+ * @author liuxiaokang
+ * @createTime 2016-08-24
+ */
+public class UserLine extends BaseIntEntity{
+	
+	// 线路类型
+	public enum UserLineType{
+		plug,phone
+	}
+
+	private String userIp;//域名
+	private String area;//地区
+	private String isDel;//0 不删除 1  删除
+	private String port;//端口
+	private String http;//协议
+	private Integer level;//
+	private Integer defCount;//最大量
+	private Integer relCount;//实际量
+	private Integer comCount;//比较1
+	private Integer comCountTwo;//比较2
+	private String status;//状态 0 未激活 1 已经激活
+	private String lineIp;//域名所对应的ip地址
+	private Integer isFree;//是否免费线路
+	private String html;//
+	private Integer ipCount;//
+	
+	private UserLineType type;	// 线路类型
+	private String encryptionMode; // 加密方式
+	private String password;		// 线路密码
+	private String imgUrl;			// 国家logo
+ 
+	public String getUserIp() {  
+        return userIp;  
+    }  
+    public void setUserIp(String userIp) {  
+        this.userIp = userIp;  
+    }
+	public String getArea() {  
+        return area;  
+    }  
+    public void setArea(String area) {  
+        this.area = area;  
+    }
+	public String getIsDel() {  
+        return isDel;  
+    }  
+    public void setIsDel(String isDel) {  
+        this.isDel = isDel;  
+    }
+	public String getPort() {  
+        return port;  
+    }  
+    public void setPort(String port) {  
+        this.port = port;  
+    }
+	public String getHttp() {  
+        return http;  
+    }  
+    public void setHttp(String http) {  
+        this.http = http;  
+    }
+	public Integer getLevel() {  
+        return level;  
+    }  
+    public void setLevel(Integer level) {  
+        this.level = level;  
+    }
+	public Integer getDefCount() {  
+        return defCount;  
+    }  
+    public void setDefCount(Integer defCount) {  
+        this.defCount = defCount;  
+    }
+	public Integer getRelCount() {  
+        return relCount;  
+    }  
+    public void setRelCount(Integer relCount) {  
+        this.relCount = relCount;  
+    }
+	public Integer getComCount() {  
+        return comCount;  
+    }  
+    public void setComCount(Integer comCount) {  
+        this.comCount = comCount;  
+    }
+	public Integer getComCountTwo() {  
+        return comCountTwo;  
+    }  
+    public void setComCountTwo(Integer comCountTwo) {  
+        this.comCountTwo = comCountTwo;  
+    }
+	public String getStatus() {  
+        return status;  
+    }  
+    public void setStatus(String status) {  
+        this.status = status;  
+    }
+	public String getLineIp() {  
+        return lineIp;  
+    }  
+    public void setLineIp(String lineIp) {  
+        this.lineIp = lineIp;  
+    }
+	public Integer getIsFree() {  
+        return isFree;  
+    }  
+    public void setIsFree(Integer isFree) {  
+        this.isFree = isFree;  
+    }
+	public String getHtml() {  
+        return html;  
+    }  
+    public void setHtml(String html) {  
+        this.html = html;  
+    }
+	public Integer getIpCount() {  
+        return ipCount;  
+    }  
+    public void setIpCount(Integer ipCount) {  
+        this.ipCount = ipCount;  
+    }
+	public UserLineType getType() {
+		return type;
+	}
+	public void setType(UserLineType type) {
+		this.type = type;
+	}
+	public String getEncryptionMode() {
+		return encryptionMode;
+	}
+	public void setEncryptionMode(String encryptionMode) {
+		this.encryptionMode = encryptionMode;
+	}
+	public String getPassword() {
+		return password;
+	}
+	public void setPassword(String password) {
+		this.password = password;
+	}
+	public String getImgUrl() {
+		return imgUrl;
+	}
+	public void setImgUrl(String imgUrl) {
+		this.imgUrl = imgUrl;
+	}
+    
+}

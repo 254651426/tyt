@@ -1,0 +1,83 @@
+<!doctype html>
+<%@ page contentType="text/html;charset=UTF-8" %>
+<html>
+<head>
+<meta charset="utf-8">
+<%@ include file="/WEB-INF/page/web/include/head.jsp"%>
+<title>天眼通</title>
+</head>
+
+<body>
+<%@ include file="/WEB-INF/page/web/include/tab.jsp"%>
+
+<div class="banner_box">
+    <div class="banner">
+        <a href="${rc.contextPath}/web/index/download"><img src="${rc.contextPath}/statics/web/images/hot.jpg"></a>
+    </div>
+</div>
+
+<!-- 天眼通能做什么 -->
+<div class="downloadbox downloadbox3">
+  <div class="downloadbox02">
+	<div class="download-img">
+    	<img src="${rc.contextPath}/statics/web/images/what.png">
+    </div>
+    <div class="download-right">
+    	<ul>
+        	<li><h2><b>01</b>天眼通能做什么？</h2></li>
+            <li><p>
+            	天眼通专注于解决浏览器无法对Pinterest，Google，youtube，facebook，twitter等网站访问的问题。通过天眼通您可以访问任何您想浏览的网站。</br>
+            	拥有专用的客户端，支持Window，Mac，Android，Ios平台。天眼通最新推出的浏览器插件支持谷歌chrome浏览器，360浏览器，百度浏览器等市面上大部分主流webkit核心的浏览器。</p></li>
+        </ul> 
+    </div>
+      <div class="clearfix"></div>
+  </div>
+</div>
+
+<div class="downloadbox downloadbox4">
+  <div class="downloadbox02">
+	
+    <div class="download-right">
+    	<ul>
+        	<li><h2><b>02</b>安全保障</h2></li>
+            <li><p>
+            		通过天眼通，您在网上冲浪的同时，我们更关心您的数据的安全。我们聘请技术大牛，做到比同类加速器快的同时，更加的安全。数据传输建立专有的数据通道，所有数据经过256位加密，更快更安全。</br>
+            	</p>
+            </li>
+        </ul> 
+    </div>
+    
+    <div class="download-img">
+    	<img src="${rc.contextPath}/statics/web/images/img2.png">
+    </div>
+    
+      <div class="clearfix"></div>
+  </div>
+</div>
+
+<div class="downloadbox">
+  <div class="downloadbox02 downloadbox3">
+	<div class="download-img">
+    	<img src="${rc.contextPath}/statics/web/images/img1.png">
+    </div>
+    <div class="download-right">
+    	<ul>
+        	<li><h2><b>03</b>高速稳定</h2></li>
+            <li><p>全球多处机房,日本、美国、香港、台湾、英国、法国多条线路，精选优质服务器，低延迟，采用先进的加速技术，所以您可以秒开youtube1080p视频无压力</p></li>
+        </ul> 
+    </div>
+      <div class="clearfix"></div>
+  </div>
+</div>
+    
+<div class="downloadbox downloadbox4">
+  <div class="downloadbox02">
+	<%@ include file="/WEB-INF/page/web/include/pro.jsp"%>
+  </div>
+</div>
+
+<!--版权-->
+<%@ include file="/WEB-INF/page/web/include/footer.jsp"%>
+</div>
+</body>
+</html>

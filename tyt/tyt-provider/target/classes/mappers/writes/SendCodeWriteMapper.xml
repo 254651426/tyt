@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bquan.dao.write.SendCodeWriteMapper" >
+  
+  <delete id="delete" parameterType="com.bquan.entity.mysql.SendCode" >
+  	<if test="id!=null">
+	  	delete from 
+			send_code
+	    where 
+	    	id = #{id}
+  	</if>
+  </delete>
+  
+  <insert id="insert" parameterType="com.bquan.entity.mysql.SendCode" >
+		INSERT INTO send_code (
+    		id
+            ,code
+            ,username
+            ,send_time
+            ,is_expired
+		)
+		VALUES
+		(
+			#{id}
+            ,#{code}
+            ,#{username}
+            ,#{sendTime}
+            ,#{isExpired}
+		)
+	</insert>
+	
+	<update id="update" parameterType="com.bquan.entity.mysql.SendCode">
+		UPDATE send_code
+		<set>
+			<if test="id!= null">id = #{id}</if>
+            <if test="code!= null">,code = #{code}</if>
+            <if test="username!= null">,username = #{username}</if>
+            <if test="sendTime!= null">,send_time = #{sendTime}</if>
+            <if test="isExpired!= null">,is_expired = #{isExpired}</if>
+		</set>
+		WHERE id = #{id}
+	</update>
+	
+</mapper>
+

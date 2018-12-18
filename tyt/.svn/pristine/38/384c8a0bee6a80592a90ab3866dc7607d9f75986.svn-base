@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bquan.dao.read.UserReadMapper" >
+  <resultMap id="BaseResultMap" type="com.bquan.entity.mysql.User" >
+    	<result column="user_id" property="id" />
+    	<result column="user_username" property="username" />
+    	<result column="user_buy_date" property="buyDate" />
+    	<result column="user_create_date" property="createDate" />
+    	<result column="user_time_left" property="timeLeft" />
+    	<result column="user_phone" property="phone" />
+    	<result column="user_status" property="status" />
+    	<result column="user_is_black" property="isBlack" />
+    	<result column="user_user_source" property="userSource" />
+    	<result column="user_password" property="password" />
+    	<result column="user_level" property="level" />
+    	<result column="user_token" property="token" />
+    	<result column="user_fmcode" property="fmcode" />
+    	<result column="user_login_date" property="loginDate" />
+    	<result column="user_ip" property="ip" />
+    	<result column="user_version" property="version" />
+    	<result column="user_vip_end_time" property="vipEndTime" />
+    	<result column="user_phone_end_time" property="phoneEndTime" />
+    	<result column="user_share_code" property="shareCode" />
+    	<result column="user_left_count" property="leftCount" />
+    	<result column="user_is_register_send" property="isRegisterSend" />
+    	<result column="user_is_vip_send" property="isVipSend" />
+    	<result column="user_free_start_time" property="freeStartTime" />
+    	<result column="user_sign_time" property="signTime" />
+    	<result column="user_is_email_send" property="isEmailSend" />
+    	<result column="user_commission_amount" property="commissionAmount" />
+    	<result column="user_modify_date" property="modifyDate" />
+    	<result column="user_send_date" property="sendDate" />
+    	<result column="user_shadowsocks_password" property="shadowsocksPassword" />
+    	<result column="user_shadowsocks_port" property="shadowsocksPort" />
+    	<result column="user_depname" property="depname" />
+    	<result column="user_note" property="note" />
+  		<result column="user_type" property="type" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+		user.id as user_id,
+		user.username as user_username,
+		user.buy_date as user_buy_date,
+		user.create_date as user_create_date,
+		user.time_left as user_time_left,
+		user.phone as user_phone,
+		user.status as user_status,
+		user.is_black as user_is_black,
+		user.user_source as user_user_source,
+		user.password as user_password,
+		user.level as user_level,
+		user.token as user_token,
+		user.fmcode as user_fmcode,
+		user.login_date as user_login_date,
+		user.ip as user_ip,
+		user.version as user_version,
+		user.vip_end_time as user_vip_end_time,
+		user.phone_end_time as user_phone_end_time,
+		user.share_code as user_share_code,
+		user.left_count as user_left_count,
+		user.is_register_send as user_is_register_send,
+		user.is_vip_send as user_is_vip_send,
+		user.free_start_time as user_free_start_time,
+		user.sign_time as user_sign_time,
+		user.is_email_send as user_is_email_send,
+		user.commission_amount as user_commission_amount,
+		user.modify_date as user_modify_date,
+		user.send_date as user_send_date,
+		user.shadowsocks_password as user_shadowsocks_password,
+		user.shadowsocks_port as user_shadowsocks_port,
+		user.depname as user_depname,
+		user.note as user_note,
+		user.type as user_type
+  </sql>
+  
+  <sql id="Base_Where_Sql" >
+  	<if test="id!=null"> and user.id = #{id} </if>
+  	<if test="username!=null"> and user.username = #{username} </if>
+  	<if test="buyDate!=null"> and user.buy_date = #{buyDate} </if>
+  	<if test="createDate!=null"> and user.create_date = #{createDate} </if>
+  	<if test="timeLeft!=null"> and user.time_left = #{timeLeft} </if>
+  	<if test="phone!=null"> and user.phone = #{phone} </if>
+  	<if test="status!=null"> and user.status = #{status} </if>
+  	<if test="isBlack!=null"> and user.is_black = #{isBlack} </if>
+  	<if test="userSource!=null"> and user.user_source = #{userSource} </if>
+  	<if test="password!=null"> and user.password = #{password} </if>
+  	<if test="level!=null"> and user.level = #{level} </if>
+  	<if test="token!=null"> and user.token = #{token} </if>
+  	<if test="fmcode!=null"> and user.fmcode = #{fmcode} </if>
+  	<if test="loginDate!=null"> and user.login_date = #{loginDate} </if>
+  	<if test="ip!=null"> and user.ip = #{ip} </if>
+  	<if test="version!=null"> and user.version = #{version} </if>
+  	<if test="vipEndTime!=null"> and user.vip_end_time = #{vipEndTime} </if>
+  	<if test="phoneEndTime!=null"> and user.phone_end_time = #{phoneEndTime} </if>
+  	<if test="shareCode!=null"> and user.share_code = #{shareCode} </if>
+  	<if test="leftCount!=null"> and user.left_count = #{leftCount} </if>
+  	<if test="isRegisterSend!=null"> and user.is_register_send = #{isRegisterSend} </if>
+  	<if test="isVipSend!=null"> and user.is_vip_send = #{isVipSend} </if>
+  	<if test="freeStartTime!=null"> and user.free_start_time = #{freeStartTime} </if>
+  	<if test="signTime!=null"> and user.sign_time = #{signTime} </if>
+  	<if test="isEmailSend!=null"> and user.is_email_send = #{isEmailSend} </if>
+  	<if test="commissionAmount!=null"> and user.commission_amount = #{commissionAmount} </if>
+  	<if test="modifyDate!=null"> and user.modify_date = #{modifyDate} </if>
+  	<if test="sendDate!=null"> and user.send_date = #{sendDate} </if>
+  	<if test="depname!=null"> and user.depname = #{depname} </if>
+  	<if test="type!=null"> and user.type = #{type} </if>
+  </sql>
+  
+  <select id="select" resultMap="BaseResultMap"  >
+    select 
+    <include refid="Base_Column_List" />
+    from user user
+    <include refid="baseReadMapper.searchSql" />
+    <include refid="Base_Where_Sql" />
+    <include refid="baseReadMapper.orderSql" />
+  </select>
+  
+  <select id="selectFmcode" resultMap="BaseResultMap" >
+  		select fmcode as user_fmcode from user where create_date BETWEEN #{beginDate} and #{endDate} GROUP BY fmcode
+  </select>
+  
+  <select id="count" resultType="Integer"  >
+    select 
+    	count(id)
+    from user user
+    <include refid="baseReadMapper.searchSql" />
+    <include refid="Base_Where_Sql" />
+  </select>
+  
+  <select id="sum" resultType="java.math.BigDecimal"  >
+    select 
+    	ifnull(sum(${sumItem}),0)
+    from user user
+    <include refid="baseReadMapper.searchSql" />
+    <include refid="Base_Where_Sql" />
+  </select>
+  
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
